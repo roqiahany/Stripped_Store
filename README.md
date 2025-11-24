@@ -1,95 +1,12 @@
-# 🛍️ Stripped — Full E-Commerce Clothing Website
+# React + Vite
 
-### Freelance Project | Delivery Time: 10 Days
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Stripped هو متجر إلكتروني كامل متخصص في **بيع الملابس**, تم تصميمه وتطويره في مدة تنفيذ **10 أيام** كمشروع Freelance لعميل يحتاج منصة جاهزة، سريعة، وسهلة الإدارة.
+Currently, two official plugins are available:
 
-المتجر مبني باستخدام **React + Vite** مع ربط كامل بـ **Firebase (Firestore + Auth)** ورفع الصور من خلال **Cloudinary**, بالإضافة إلى **Admin Dashboard** للتحكم الكامل في كل محتويات المتجر.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
----
+## Expanding the ESLint configuration
 
-## 🚀 Features — مميزات المتجر
-
-### 🛒 **Storefront**
-
-- عرض جميع المنتجات مع دعم الفلترة حسب النوع/السعر/الأقسام
-- صفحة تفاصيل المنتج مع معرض صور (Gallery)
-- نظام عربة تسوق متكامل (Add / Remove / Update Quantities)
-- Wishlist (قائمة الرغبات)
-- بحث سريع عن المنتجات
-- صفحات متجاوبة بالكامل على الموبايل والتابلت والكمبيوتر
-- عروض وخصومات
-- سلايدر رئيسي وصور ترويجية
-
----
-
-## 🔐 **Authentication System**
-
-- تسجيل دخول
-- إنشاء حساب
-- استرجاع كلمة المرور
-- ربط Firestore ببيانات المستخدم
-- حماية الصفحات المحظورة Protected Routes
-
----
-
-## 🧾 **Checkout & Orders**
-
-- صفحة Checkout كاملة
-- حفظ الطلبات في Firestore
-- تتبع حالة الطلب (Pending / Shipped / Completed)
-- صفحة My Orders داخل حساب المستخدم
-
----
-
-## 🛠️ **Admin Dashboard — لوحة التحكم**
-
-لوحة تحكم قوية لإدارة كل جزء في المتجر:
-
-### 🧩 المنتجات
-
-- إضافة منتج جديد
-- تعديل منتج
-- حذف منتج
-- التحكم في الصور باستخدام Cloudinary
-- تصنيف المنتجات حسب الأقسام
-
-### 📦 الطلبات
-
-- عرض كل الطلبات
-- تحديث حالة الطلب
-- بيانات العميل + تفاصيل المنتجات
-
-### 👥 المستخدمين
-
-- عرض بيانات المستخدمين
-- إمكانية تعطيل/تفعيل الحساب
-
-### 🖼️ إدارة الصور
-
-- رفع صور مباشرة لـ Cloudinary
-- ضغط وتنظيم الصور
-- مسح الصور من لوحة التحكم
-
----
-
-## 🧰 **Tech Stack**
-
-- **React + Vite**
-- **Firebase Authentication**
-- **Firebase Firestore**
-- **Firebase Hosting (optional)**
-- **Cloudinary Image Uploads**
-- **TailwindCSS**
-- **React Router**
-- **Framer Motion**
-- **Axios**
-
----
-
-## 📦 Installation — خطوات التشغيل محليًا
-
-```bash
-npm install
-npm run dev
-```
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
