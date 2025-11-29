@@ -22,10 +22,9 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />{' '}
           <Route path="/all-products" element={<AllProductsPage />} />
-          {/* <Route path="/category/:categoryName" element={<CategoryPage />} />
-       
+          <Route path="/category/:categoryName" element={<CategoryPage />} />
           <Route path="/product/:id" element={<ProductDetailsPage />} />
-          <Route path="/cart" element={<CartPage />} />
+          {/*   <Route path="/cart" element={<CartPage />} />
           <Route path="/login" element={<AdminLogin />} />
           <Route path="/admin/profile" element={<AdminProfile />} />
           <Route path="/trending" element={<TrendingPage />} />

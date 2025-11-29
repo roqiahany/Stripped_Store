@@ -92,7 +92,7 @@ export default function TrendingPage() {
             onClick={() => setShowFilter(!showFilter)}
             className="flex items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg transition"
           >
-            Filter : Price
+            Filter :
             <svg
               className={`w-4 h-4 transition-transform duration-300 ${
                 showFilter ? 'rotate-180' : 'rotate-0'

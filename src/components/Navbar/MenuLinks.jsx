@@ -23,6 +23,7 @@ const MenuLinks = () => {
               hover:text-pink-700 
               transition-colors 
               duration-300
+               text-sm sm:text-base md:text-lg  
               ${
                 location.pathname === link.path
                   ? 'font-semibold'

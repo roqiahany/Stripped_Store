@@ -17,7 +17,8 @@ const Icons = ({ setFilteredProducts }) => {
       </div>
 
       <Link to="/cart" className="relative">
-        <ShoppingCart className="w-6 h-6 text-gray-700" />
+        {/* <ShoppingCart className="w-6 h-6 text-gray-700" /> */}
+        <ShoppingCart className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-gray-700" />
         {cart.length > 0 && (
           <span className="absolute -top-2 -right-2 bg-pink-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
             {cart.length}

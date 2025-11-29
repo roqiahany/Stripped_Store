@@ -84,7 +84,10 @@ export default function UserIcon() {
           className="w-11 h-11 flex items-center justify-center rounded-full border border-pink-600 text-pink-600
                     hover:text-white transition-all duration-200 shadow-sm"
         >
-          <UserRound className="w-6 h-6" strokeWidth={1.7} />
+          <UserRound
+            className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-gray-700"
+            strokeWidth={1.2}
+          />
         </button>
 
         {/* Tooltip */}

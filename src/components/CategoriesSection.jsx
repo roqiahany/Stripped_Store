@@ -47,15 +47,11 @@ const CategoriesSection = () => {
   }, []);
 
   const SkeletonCard = () => (
-    <div className="relative overflow-hidden rounded-xl shadow-md w-full">
+    <div className="relative overflow-hidden rounded-2xl shadow-lg w-full aspect-[4/5]">
       {/* نفس ارتفاع الصورة الحقيقية */}
-      <div className="w-full h-[450px] bg-gray-300 rounded-xl blur-[0.5px] relative overflow-hidden">
+      <div className="w-full h-full bg-gray-300 rounded-2xl blur-[0.5px] relative overflow-hidden">
         {/* Shimmer effect */}
-        <div
-          className="absolute inset-0 bg-gradient-to-r 
-        from-transparent via-white/30 to-transparent 
-        animate-[shimmer_1.6s_infinite]"
-        ></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-[shimmer_1.6s_infinite]"></div>
       </div>
     </div>
   );
@@ -64,7 +60,7 @@ const CategoriesSection = () => {
     <section className="py-20 bg-gray-50" id="categories">
       <div className="container mx-auto px-6">
         {/* العنوان */}
-        <h2 className="text-3xl font-bold text-gray-800 mb-12 text-left">
+        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-800 mb-12 text-left">
           Shop by Category
         </h2>
 
@@ -94,9 +90,9 @@ const CategoriesSection = () => {
                     />
                   </div>
 
-                  {/* الاسم والسهم */}
+                  {/* الاسم */}
                   <div className="flex items-center mt-4 px-1">
-                    <h3 className="text-xl font-semibold text-gray-800 group-hover:text-pink-600 transition">
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 group-hover:text-pink-600 transition">
                       {cat.name}
                     </h3>
                     <ArrowRight className="text-pink-600 group-hover:translate-x-1 transition-transform duration-300" />

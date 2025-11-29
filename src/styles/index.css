@@ -71,6 +71,25 @@ h6 {
   animation: marquee 20s linear infinite;
 }
 
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.35s ease-out;
+}
+
+button {
+  transition: 0.2s ease;
+}
+
 :root {
   --gold-50: #b99470;
   --gold-100: #b38e6c;

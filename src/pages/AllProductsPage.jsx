@@ -5,6 +5,7 @@ import Navbar from './../components/Navbar/Navbar';
 import PriceFilterSidebar from './../components/PriceFilterSidebar';
 import { motion } from 'framer-motion';
 import ProductCard from './../components/ProductDetails/ProductCard';
+import { X } from 'lucide-react';
 
 const AllProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -21,7 +22,7 @@ const AllProductsPage = () => {
   // ⭐ Skeleton للمنتجات
   const SkeletonProduct = () => (
     <div className="animate-pulse">
-      <div className="w-full h-64 bg-gray-300 rounded-xl relative overflow-hidden">
+      <div className="w-full h-40 sm:h-52 md:h-64 bg-gray-300 rounded-xl relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-[shimmer_1.3s_infinite]"></div>
       </div>
 
@@ -86,23 +87,34 @@ const AllProductsPage = () => {
       <Navbar />
       <div className="py-8 bg-white">
         <div className="max-w-7xl mx-auto px-6 flex justify-end">
-          <h1 className="text-5xl font-light text-gray-800 tracking-wide">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-gray-800 tracking-wide">
             Products
           </h1>
         </div>
       </div>
 
-      <section className="py-16 bg-white max-w-7xl mx-auto px-6" dir="ltr">
+      <section
+        className="py-10 sm:py-14 md:py-16 max-w-7xl mx-auto px-4 sm:px-6 md:px-8"
+        dir="ltr"
+      >
         {/* Filter */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
           <div className="relative inline-block">
             <button
               onClick={() => setShowFilter(!showFilter)}
-              className="flex items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg transition"
+              className="
+    flex items-center gap-2
+    bg-pink-600 hover:bg-pink-700 text-white
+    px-3 py-1.5
+    sm:px-4 sm:py-2
+    md:px-5 md:py-2.5
+    text-sm sm:text-base
+    rounded-lg transition
+  "
             >
-              Filter : Price
+              Filter
               <svg
-                className={`w-4 h-4 transition-transform ${
+                className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform ${
                   showFilter ? 'rotate-180' : ''
                 }`}
                 viewBox="0 0 10 6"
@@ -116,20 +128,63 @@ const AllProductsPage = () => {
             </button>
 
             {showFilter && (
-              <div className="absolute top-full mt-2 left-0 z-50">
-                <PriceFilterSidebar
-                  min={min}
-                  max={max}
-                  setMin={setMin}
-                  setMax={setMax}
-                  products={products}
-                  setFilteredProducts={setFilteredProducts}
-                  maxPrice={maxPrice}
-                  setCurrentPage={setCurrentPage}
-                  setShowFilter={setShowFilter}
-                  resetFilter={resetFilter}
-                />
-              </div>
+              <>
+                {/* 🟣 Desktop Sidebar ثابت */}
+                <div className="hidden md:block absolute top-full mt-2 left-0 z-50">
+                  <PriceFilterSidebar
+                    min={min}
+                    max={max}
+                    setMin={setMin}
+                    setMax={setMax}
+                    products={products}
+                    setFilteredProducts={setFilteredProducts}
+                    maxPrice={maxPrice}
+                    setCurrentPage={setCurrentPage}
+                    setShowFilter={setShowFilter}
+                    resetFilter={resetFilter}
+                  />
+                </div>
+
+                {/* 🔵 Mobile Modal */}
+                <div className="md:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-end">
+                  <div
+                    className="
+      bg-white 
+      w-full 
+      rounded-t-2xl 
+      shadow-xl 
+      p-5 
+      max-h-[75vh] 
+      overflow-y-auto 
+      animate-slideUp
+    "
+                  >
+                    {/* Close Button */}
+                    <div className="flex justify-end mb-3">
+                      <button
+                        onClick={() => setShowFilter(false)}
+                        className="text-gray-600 text-2xl"
+                      >
+                        <X size={22} />
+                      </button>
+                    </div>
+
+                    {/* Sidebar Content */}
+                    <PriceFilterSidebar
+                      min={min}
+                      max={max}
+                      setMin={setMin}
+                      setMax={setMax}
+                      products={products}
+                      setFilteredProducts={setFilteredProducts}
+                      maxPrice={maxPrice}
+                      setCurrentPage={setCurrentPage}
+                      setShowFilter={setShowFilter}
+                      resetFilter={resetFilter}
+                    />
+                  </div>
+                </div>
+              </>
             )}
           </div>
 
@@ -142,14 +197,30 @@ const AllProductsPage = () => {
         {/* ⭐ GRID */}
         {loading ? (
           // ⭐ Skeleton أثناء التحميل
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div
+            className=" grid 
+  grid-cols-2      /* موبايل صغير جداً */
+  sm:grid-cols-2 
+  md:grid-cols-3 
+  lg:grid-cols-4 
+  xl:grid-cols-4 
+  gap-4 sm:gap-6 md:gap-8"
+          >
             {Array.from({ length: 8 }).map((_, i) => (
               <SkeletonProduct key={i} />
             ))}
           </div>
         ) : currentProducts.length > 0 ? (
           // ⭐ المنتجات بعد اللود
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div
+            className=" grid 
+  grid-cols-2      /* موبايل صغير جداً */
+  sm:grid-cols-2 
+  md:grid-cols-3 
+  lg:grid-cols-4 
+  xl:grid-cols-4 
+  gap-4 sm:gap-6 md:gap-8"
+          >
             {currentProducts.map((product, index) => (
               <ProductCard key={product.id} product={product} index={index} />
             ))}
@@ -165,32 +236,44 @@ const AllProductsPage = () => {
               <button
                 key={i}
                 onClick={() => setCurrentPage(i + 1)}
-                className={`px-4 py-2 rounded-lg border ${
-                  currentPage === i + 1
-                    ? 'bg-pink-600 text-white'
-                    : 'bg-white hover:bg-gray-100'
-                }`}
+                className={`
+    px-3 py-1.5
+    sm:px-4 sm:py-2
+    rounded-lg border text-sm sm:text-base
+    ${
+      currentPage === i + 1
+        ? 'bg-pink-600 text-white'
+        : 'bg-white hover:bg-gray-100'
+    }
+  `}
               >
                 {i + 1}
               </button>
             ))}
           </div>
         )}
-      </section>
 
-      {/* ⭐ Shimmer Animation */}
-      <style>
-        {`
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-        .animate-[shimmer_1.3s_infinite] {
-          animation: shimmer 1.3s infinite;
-          background: linear-gradient(to right, transparent, rgba(255,255,255,0.5), transparent);
-        }
-      `}
-      </style>
+        {/* ⭐ Shimmer Animation */}
+        <style>
+          {`
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.35s ease-out;
+}
+`}
+        </style>
+
+        <div className="animate-[shimmer_1300ms_infinite]"></div>
+      </section>
     </div>
   );
 };

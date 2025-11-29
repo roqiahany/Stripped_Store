@@ -89,17 +89,18 @@ const CategoryPage = () => {
       <Navbar />
 
       {/* 🔹 Hero Section */}
-      <div className="  py-8 bg-white">
-        <div className="max-w-7xl mx-auto px-6 flex justify-end ">
+      <div className="py-4 sm:py-6 md:py-8 lg:py-10 bg-white ">
+        <div className="max-w-7xl mx-auto px-6 flex justify-end">
           <h1
-            className="text-5xl font-light text-gray-800 tracking-wide capitalize"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 tracking-wide capitalize"
             style={{ fontFamily: 'Inter, sans-serif' }}
           >
             Products
           </h1>
         </div>
       </div>
-      <section className="py-16 bg-white min-h-screen max-w-7xl mx-auto">
+
+      <section className="py-8 sm:py-12 md:py-16 lg:py-20 bg-white min-h-screen max-w-7xl mx-auto">
         <div
           className="bg-white px-6 flex justify-between items-center gap-6 mb-10"
           dir="ltr"
@@ -110,7 +111,7 @@ const CategoryPage = () => {
               onClick={() => setShowFilter(!showFilter)}
               className="flex items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg transition"
             >
-              Filter : Price
+              Filter
               <svg
                 className={`w-4 h-4 transition-transform duration-300 ${
                   showFilter ? 'rotate-180' : 'rotate-0'
@@ -154,12 +155,12 @@ const CategoryPage = () => {
           </div>
         </div>
         {/* المنتجات */}
-        <div className="bg-white grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="bg-white grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mx-6">
           {/* 🔥 LOADING MODE */}
           {loading ? (
             Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="animate-pulse space-y-4">
-                <div className="w-full h-[400px] bg-gray-200 rounded-xl shimmer"></div>
+                <div className="w-full h-[350px] bg-gray-200 rounded-xl shimmer"></div>
                 <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
                 <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
               </div>
@@ -169,7 +170,7 @@ const CategoryPage = () => {
               <ProductCard
                 key={product.id}
                 product={product}
-                imageHeight="h-[400px]"
+                imageHeight="h-[350px]"
                 yOffset={30}
                 delay={index * 0.1}
                 duration={0.5}

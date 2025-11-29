@@ -41,7 +41,7 @@ export default function Products() {
       <div className="h-[450px] w-full bg-gray-300 rounded-xl blur-[1px] relative">
         {/* Shimmer effect */}
         <div
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent 
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent
                         animate-[shimmer_1.6s_infinite]"
         ></div>
       </div>
