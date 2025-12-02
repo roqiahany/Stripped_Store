@@ -143,34 +143,39 @@ export default function LoginSignup() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        bgcolor: 'background.default',
-        px: { xs: 2, sm: 3, md: 5 }, // padding أفقي responsive
+        bgcolor: 'var(--gold-200)', // خلفية الصفحة أغمق شوية
+        px: { xs: 2, sm: 3, md: 5 },
       }}
     >
       <Box
         component="form"
         onSubmit={handleSubmit}
         sx={{
-          bgcolor: 'background.paper',
+          bgcolor: 'var(--gold-700)', // فورم داكن لزيادة التباين
           p: { xs: 3, sm: 4, md: 5 },
           borderRadius: 3,
-          boxShadow: 3,
+          boxShadow: '0 6px 25px rgba(0,0,0,0.3)',
           width: '100%',
-          maxWidth: { xs: 350, sm: 420, md: 480 }, // responsive maxWidth
+          maxWidth: { xs: 350, sm: 420, md: 480 },
           display: 'flex',
           flexDirection: 'column',
           gap: 3,
         }}
       >
+        {/* العنوان */}
         <Typography
           variant="h4"
           textAlign="center"
-          color="secondary.main"
-          sx={{ fontSize: { xs: '1.8rem', sm: '2rem', md: '2.2rem' } }} // responsive fontSize
+          sx={{
+            fontSize: { xs: '1.8rem', sm: '2rem', md: '2.2rem' },
+            color: 'var(--gold-50)', // لون فاتح للنص
+            fontWeight: 700,
+          }}
         >
           Stripped Store
         </Typography>
 
+        {/* البريد الإلكتروني */}
         <TextField
           fullWidth
           label="البريد الإلكتروني"
@@ -181,14 +186,30 @@ export default function LoginSignup() {
               <InputAdornment position="start">
                 <Icon
                   icon="mdi:email-outline"
-                  fontSize={22} // يمكنك تعديل حجم الأيقونة حسب الحاجة
-                  color="var(--gold-500)"
+                  fontSize={22}
+                  color="var(--gold-50)" // أيقونة فاتحة
                 />
               </InputAdornment>
             ),
           }}
+          sx={{
+            '& .MuiInputLabel-root': { color: 'var(--gold-50)' },
+            '& .MuiOutlinedInput-root': {
+              bgcolor: 'var(--gold-600)', // خلفية داكنة للحقل
+              color: 'var(--gold-50)',
+              '& fieldset': { borderColor: 'var(--gold-500)' },
+              '&:hover fieldset': { borderColor: 'var(--gold-50)' },
+              '&.Mui-focused fieldset': { borderColor: 'var(--gold-50)' },
+              // إصلاح autofill
+              '& input:-webkit-autofill': {
+                WebkitBoxShadow: '0 0 0px 1000px var(--gold-600) inset',
+                WebkitTextFillColor: 'var(--gold-50)',
+              },
+            },
+          }}
         />
 
+        {/* كلمة المرور */}
         <TextField
           type={showPassword ? 'text' : 'password'}
           label="كلمة المرور"
@@ -204,14 +225,29 @@ export default function LoginSignup() {
                       showPassword ? 'solar:eye-bold' : 'solar:eye-closed-bold'
                     }
                     fontSize={22}
-                    color="var(--gold-500)"
+                    color="var(--gold-50)"
                   />
                 </IconButton>
               </InputAdornment>
             ),
           }}
+          sx={{
+            '& .MuiInputLabel-root': { color: 'var(--gold-50)' },
+            '& .MuiOutlinedInput-root': {
+              bgcolor: 'var(--gold-600)',
+              color: 'var(--gold-50)',
+              '& fieldset': { borderColor: 'var(--gold-500)' },
+              '&:hover fieldset': { borderColor: 'var(--gold-50)' },
+              '&.Mui-focused fieldset': { borderColor: 'var(--gold-50)' },
+              '& input:-webkit-autofill': {
+                WebkitBoxShadow: '0 0 0px 1000px var(--gold-600) inset',
+                WebkitTextFillColor: 'var(--gold-50)',
+              },
+            },
+          }}
         />
 
+        {/* زر تسجيل الدخول / إنشاء الحساب */}
         <Button
           type="submit"
           fullWidth
@@ -220,6 +256,10 @@ export default function LoginSignup() {
           sx={{
             py: { xs: 1.5, sm: 2 },
             fontSize: { xs: '0.9rem', sm: '1rem' },
+            backgroundColor: 'var(--gold-50)',
+            color: 'var(--gold-900)',
+            fontWeight: 600,
+            '&:hover': { backgroundColor: 'var(--gold-100)' },
           }}
         >
           {loading
@@ -229,11 +269,20 @@ export default function LoginSignup() {
             : 'تسجيل الدخول'}
         </Button>
 
+        {/* زر التبديل بين تسجيل الدخول و إنشاء الحساب */}
         <Button
           type="button"
           variant="text"
           onClick={() => setIsSignup(!isSignup)}
-          sx={{ fontSize: { xs: '0.8rem', sm: '0.9rem' } }}
+          sx={{
+            fontSize: { xs: '0.8rem', sm: '0.9rem' },
+            color: '#fbfbfb',
+            fontWeight: 600,
+            '&:hover': {
+              color: '#fbfbfb',
+              backgroundColor: 'transparent',
+            },
+          }}
         >
           {isSignup ? 'لديك حساب؟ سجل الدخول' : 'إنشاء حساب جديد'}
         </Button>
