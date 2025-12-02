@@ -1,4 +1,4 @@
-import { FaFacebook, FaInstagram, FaTiktok } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaTiktok, FaWhatsapp } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -28,6 +28,16 @@ const Footer = () => {
                 className="text-pink-700 hover:text-pink-500 transition-colors duration-300"
               >
                 <FaFacebook size={28} />
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://wa.me/201117194095"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-pink-700 hover:text-pink-500 transition-colors duration-300"
+              >
+                <FaWhatsapp size={28} />
               </a>
             </li>
             <li>

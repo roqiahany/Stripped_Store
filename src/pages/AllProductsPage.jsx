@@ -85,16 +85,16 @@ const AllProductsPage = () => {
   return (
     <div className="bg-white min-h-screen">
       <Navbar />
-      <div className="py-8 bg-white">
+      <div className="py-4 sm:py-6 md:py-8 lg:py-10 bg-white">
         <div className="max-w-7xl mx-auto px-6 flex justify-end">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-light text-gray-800 tracking-wide">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-800 tracking-wide capitalize">
             Products
           </h1>
         </div>
       </div>
 
       <section
-        className="py-10 sm:py-14 md:py-16 max-w-7xl mx-auto px-4 sm:px-6 md:px-8"
+        className="py-4 sm:py-12 md:py-16 lg:py-20 max-w-7xl mx-auto px-4 sm:px-6 md:px-8"
         dir="ltr"
       >
         {/* Filter */}

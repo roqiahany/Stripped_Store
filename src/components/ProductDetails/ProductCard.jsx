@@ -74,12 +74,12 @@ export default function ProductCard({
             <span className="font-semibold text-gray-500 text-xs sm:text-sm md:text-base">
               Sizes:
             </span>
-            {product.sizes.map((size) => (
+            {product.sizes.map((sizeObj, index) => (
               <span
-                key={size}
+                key={sizeObj.name || index}
                 className="px-2 py-0.5 border rounded-md text-[10px] sm:text-xs md:text-sm bg-gray-100"
               >
-                {size}
+                {sizeObj.name}
               </span>
             ))}
           </div>

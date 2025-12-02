@@ -65,13 +65,14 @@ export default function CartPage() {
  الكمية: ${item.quantity}
 السعر: ${item.price.toFixed(2)} EGP
  الصورة: ${imageUrl}
+ الحجم: ${item.selectedSize?.name || 'لا يوجد'}
 
 --------------------------\n`;
     });
 
     message += `\nالإجمالي الكلي: ${total.toFixed(2)} EGP`;
 
-    const phoneNumber = '201011441935'; // رقمك بدون علامة +
+    const phoneNumber = '201117194095'; // رقمك بدون علامة +
     const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
       message
     )}`;
@@ -127,7 +128,10 @@ export default function CartPage() {
                     .fill(0)
                     .map((_, i) => <SkeletonRow key={i} />)
                 : cart.map((item) => (
-                    <tr key={item.id} className="border-b border-gray-100  ">
+                    <tr
+                      key={item.id + (item.selectedSize?.name || '')}
+                      className="border-b border-gray-100  "
+                    >
                       {/* المنتج */}
                       <td className="flex flex-col sm:flex-row items-center gap-5 py-5 px-4">
                         {/* صورة المنتج */}
@@ -153,12 +157,17 @@ export default function CartPage() {
 
                           {item.selectedColor && (
                             <span className="text-gray-500 text-sm mt-1">
-                              اللون: {item.selectedColor.name}
+                              color: {item.selectedColor.name}
                             </span>
                           )}
 
                           <p className="text-gray-400 text-sm mt-1">
                             {item.price.toFixed(2)} LE
+                          </p>
+
+                          <p className="text-gray-500 text-sm mt-1">
+                            size:
+                            {item.selectedSize?.name || item.selectedSize}
                           </p>
                         </div>
                       </td>
@@ -170,7 +179,9 @@ export default function CartPage() {
                           <div className="flex items-center rounded-lg overflow-hidden bg-transparent border border-gray-200">
                             {/* + */}
                             <button
-                              onClick={() => incrementQuantity(item.id)}
+                              onClick={() =>
+                                incrementQuantity(item.id, item.selectedSize)
+                              }
                               className="w-9 h-9 flex items-center justify-center text-gray-600 hover:text-gray-800 transition"
                             >
                               <PlusIcon className="w-4 h-4" />
@@ -183,7 +194,9 @@ export default function CartPage() {
 
                             {/* - */}
                             <button
-                              onClick={() => decrementQuantity(item.id)}
+                              onClick={() =>
+                                decrementQuantity(item.id, item.selectedSize)
+                              }
                               disabled={item.quantity === 1}
                               className={`w-9 h-9 flex items-center justify-center transition ${
                                 item.quantity === 1
@@ -197,7 +210,9 @@ export default function CartPage() {
 
                           {/* حذف */}
                           <button
-                            onClick={() => removeFromCart(item.id)}
+                            onClick={() =>
+                              removeFromCart(item.id, item.selectedSize)
+                            }
                             className="text-gray-700 hover:text-black transition"
                             title="Remove"
                           >

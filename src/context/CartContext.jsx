@@ -63,22 +63,11 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const incrementQuantity = (id) => {
+  const incrementQuantity = (id, selectedSize = null) => {
     setCart((prev) => {
       const updatedCart = prev.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      );
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
-      syncCartToFirestore(updatedCart);
-      return updatedCart;
-    });
-  };
-
-  const decrementQuantity = (id) => {
-    setCart((prev) => {
-      const updatedCart = prev.map((item) =>
-        item.id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
+        item.id === id && item.selectedSize?.name === selectedSize?.name
+          ? { ...item, quantity: item.quantity + 1 }
           : item
       );
       localStorage.setItem('cart', JSON.stringify(updatedCart));
@@ -87,16 +76,36 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  const addToCart = (item, quantity = 1) => {
+  const decrementQuantity = (id, selectedSize = null) => {
     setCart((prev) => {
-      const exist = prev.find((i) => i.id === item.id);
+      const updatedCart = prev.map((item) =>
+        item.id === id &&
+        item.selectedSize?.name === selectedSize?.name &&
+        item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      );
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      syncCartToFirestore(updatedCart);
+      return updatedCart;
+    });
+  };
+  const addToCart = (item, quantity = 1, selectedSize = null) => {
+    setCart((prev) => {
+      // نشوف هل موجود نفس المنتج بنفس الحجم
+      const exist = prev.find(
+        (i) => i.id === item.id && i.selectedSize?.name === selectedSize?.name
+      );
+
       let updatedCart;
       if (exist) {
         updatedCart = prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i
+          i.id === item.id && i.selectedSize?.name === selectedSize?.name
+            ? { ...i, quantity: i.quantity + quantity }
+            : i
         );
       } else {
-        updatedCart = [...prev, { ...item, quantity }];
+        updatedCart = [...prev, { ...item, quantity, selectedSize }];
       }
 
       localStorage.setItem('cart', JSON.stringify(updatedCart));
@@ -106,9 +115,12 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  const removeFromCart = (id) => {
+  const removeFromCart = (id, selectedSize = null) => {
     setCart((prev) => {
-      const updatedCart = prev.filter((item) => item.id !== id);
+      const updatedCart = prev.filter(
+        (item) =>
+          !(item.id === id && item.selectedSize?.name === selectedSize?.name)
+      );
       localStorage.setItem('cart', JSON.stringify(updatedCart));
       syncCartToFirestore(updatedCart);
       return updatedCart;

@@ -47,6 +47,7 @@ export default function LoginSignup() {
       let role = 'user';
 
       if (isSignup) {
+        // تسجيل حساب جديد
         const userCred = await createUserWithEmailAndPassword(
           auth,
           email,
@@ -68,9 +69,10 @@ export default function LoginSignup() {
           role,
         });
 
-        toast.success('تم إنشاء الحساب بنجاح');
+        toast.success('تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.');
         navigate('/');
       } else {
+        // تسجيل الدخول
         const userCred = await signInWithEmailAndPassword(
           auth,
           email,
@@ -78,7 +80,7 @@ export default function LoginSignup() {
         );
         user = userCred.user;
 
-        if (email === ADMIN_EMAIL) role = 'admin';
+        if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) role = 'admin';
 
         const userDocRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userDocRef);
@@ -100,18 +102,40 @@ export default function LoginSignup() {
         localStorage.setItem('userRole', role);
 
         toast.success(
-          role === 'admin' ? 'تم تسجيل الدخول كأدمن' : 'تم تسجيل الدخول بنجاح'
+          role === 'admin'
+            ? 'تم تسجيل الدخول بنجاح كأدمن! يمكنك الآن إدارة المتجر.'
+            : 'تم تسجيل الدخول بنجاح! استمتع بتجربتك.'
         );
+
         role === 'admin' ? navigate('/admin') : navigate('/');
       }
     } catch (err) {
       console.error(err);
-      toast.error(err.message);
+
+      // هنا نوضح الخطأ للمستخدم بطريقة مفهومة
+      let message = '';
+      switch (err.code) {
+        case 'auth/invalid-email':
+          message = 'البريد الإلكتروني غير صحيح، حاول مرة أخرى.';
+          break;
+        case 'auth/user-not-found':
+          message = 'البريد الإلكتروني غير موجود، حاول إنشاء حساب جديد.';
+          break;
+        case 'auth/wrong-password':
+          message = 'كلمة المرور خاطئة، حاول مرة أخرى.';
+          break;
+        case 'auth/invalid-credential':
+          message = 'هناك مشكلة في بيانات الدخول، تحقق منها.';
+          break;
+        default:
+          message = 'حدث خطأ ما، يرجى المحاولة لاحقاً.';
+      }
+
+      toast.error(message);
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <Box
       sx={{
@@ -120,7 +144,7 @@ export default function LoginSignup() {
         alignItems: 'center',
         justifyContent: 'center',
         bgcolor: 'background.default',
-        px: 2,
+        px: { xs: 2, sm: 3, md: 5 }, // padding أفقي responsive
       }}
     >
       <Box
@@ -128,18 +152,23 @@ export default function LoginSignup() {
         onSubmit={handleSubmit}
         sx={{
           bgcolor: 'background.paper',
-          p: { xs: 3, md: 5 },
+          p: { xs: 3, sm: 4, md: 5 },
           borderRadius: 3,
           boxShadow: 3,
           width: '100%',
-          maxWidth: 420,
+          maxWidth: { xs: 350, sm: 420, md: 480 }, // responsive maxWidth
           display: 'flex',
           flexDirection: 'column',
           gap: 3,
         }}
       >
-        <Typography variant="h4" textAlign="center" color="secondary.main">
-          Tarhty Store
+        <Typography
+          variant="h4"
+          textAlign="center"
+          color="secondary.main"
+          sx={{ fontSize: { xs: '1.8rem', sm: '2rem', md: '2.2rem' } }} // responsive fontSize
+        >
+          Stripped Store
         </Typography>
 
         <TextField
@@ -152,8 +181,8 @@ export default function LoginSignup() {
               <InputAdornment position="start">
                 <Icon
                   icon="mdi:email-outline"
-                  fontSize={24}
-                  color="var(  --gold-500)"
+                  fontSize={22} // يمكنك تعديل حجم الأيقونة حسب الحاجة
+                  color="var(--gold-500)"
                 />
               </InputAdornment>
             ),
@@ -175,7 +204,7 @@ export default function LoginSignup() {
                       showPassword ? 'solar:eye-bold' : 'solar:eye-closed-bold'
                     }
                     fontSize={22}
-                    color="var(  --gold-500)"
+                    color="var(--gold-500)"
                   />
                 </IconButton>
               </InputAdornment>
@@ -183,7 +212,16 @@ export default function LoginSignup() {
           }}
         />
 
-        <Button type="submit" fullWidth variant="contained" disabled={loading}>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          disabled={loading}
+          sx={{
+            py: { xs: 1.5, sm: 2 },
+            fontSize: { xs: '0.9rem', sm: '1rem' },
+          }}
+        >
           {loading
             ? 'جاري المعالجة...'
             : isSignup
@@ -195,6 +233,7 @@ export default function LoginSignup() {
           type="button"
           variant="text"
           onClick={() => setIsSignup(!isSignup)}
+          sx={{ fontSize: { xs: '0.8rem', sm: '0.9rem' } }}
         >
           {isSignup ? 'لديك حساب؟ سجل الدخول' : 'إنشاء حساب جديد'}
         </Button>

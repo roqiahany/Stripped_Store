@@ -20,11 +20,13 @@ export default function ProductDetailsPage() {
   // states
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [loadingRecommended, setLoadingRecommended] = useState(true);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   const [quantity, setQuantity] = useState(1);
   const [activeColorIndex, setActiveColorIndex] = useState(0);
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [product, setProduct] = useState(location.state?.product || null);
+  const [selectedSize, setSelectedSize] = useState(null);
 
   const [currentImage, setCurrentImage] = useState(
     product ? product.images?.[0] : '/no-image.png'
@@ -43,6 +45,20 @@ export default function ProductDetailsPage() {
     setImageLoaded(false);
   }, [currentImage]);
 
+  // change main image when user selects a size (if size has image)
+  useEffect(() => {
+    if (!selectedSize) return;
+
+    // لو selectedSize كائن وفيه field image
+    if (typeof selectedSize === 'object' && selectedSize.image) {
+      setCurrentImage(selectedSize.image);
+      return;
+    }
+
+    // لو selectedSize مجرد string — ممكن ما يكونش عنده صورة مرتبطة
+    // لو عندك logic mapping من sizeName -> صورة تانية، ضيفيه هنا
+  }, [selectedSize]);
+
   // fetch product (always fetch to ensure fresh data)
   useEffect(() => {
     const fetchProduct = async () => {
@@ -55,6 +71,9 @@ export default function ProductDetailsPage() {
           setProduct(fetchedProduct);
           setCurrentImage(fetchedProduct.images?.[0] || '/no-image.png');
           setActiveColorIndex(0);
+
+          // ✨ اختر أول مقاس افتراضياً إذا متوفر عشان يظهر الـ selected state فوراً
+          setSelectedSize(fetchedProduct.sizes?.[0] || null);
         } else {
           setProduct(null);
         }
@@ -106,23 +125,36 @@ export default function ProductDetailsPage() {
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   const handleColorClick = (color, index) => {
-    // safety: if color.imageIndex exists use it, else if color.image use it
-    const newImg =
-      typeof color.imageIndex !== 'undefined'
-        ? product.images?.[color.imageIndex]
-        : color.image || product.images?.[0];
-    setCurrentImage(newImg || '/no-image.png');
     setActiveColorIndex(index);
+
+    // لو اللون عنده image → استعمله مباشرة
+    if (color.image) {
+      setCurrentImage(color.image);
+      return;
+    }
+
+    // لو مفيش صورة في اللون → استخدم صورة المقاس
+    if (
+      selectedSize &&
+      typeof selectedSize === 'object' &&
+      selectedSize.image
+    ) {
+      setCurrentImage(selectedSize.image);
+      return;
+    }
+
+    // لو مفيش أي صورة → خلي الصورة الحالية بدون تغيير
   };
 
   const handleAddToCart = () => {
     if (!product) return;
-    const productWithSelectedColor = {
+    const productWithSelectedOptions = {
       ...product,
       selectedColor: product.colors?.[activeColorIndex] || null,
+      selectedSize: selectedSize || null,
       selectedImage: currentImage,
     };
-    addToCart(productWithSelectedColor, quantity);
+    addToCart(productWithSelectedOptions, quantity, selectedSize);
     navigate('/cart');
   };
 
@@ -220,17 +252,44 @@ export default function ProductDetailsPage() {
                   <div className="absolute inset-0 rounded-xl bg-gray-200 animate-pulse z-10"></div>
                 )}
 
+                <div className="relative w-full flex justify-center group">
+                  <img
+                    src={currentImage}
+                    alt={product.name}
+                    loading="lazy"
+                    onLoad={() => setImageLoaded(true)}
+                    className="w-full h-[clamp(220px,45vw,550px)] object-cover rounded-xl shadow-lg transition-all duration-700 ease-in-out"
+                  />
+
+                  {/* أيقونة التكبير تظهر عند الهوف */}
+                  <div
+                    className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition cursor-pointer rounded-xl"
+                    onClick={() => setIsLightboxOpen(true)}
+                  >
+                    <span className="text-white text-4xl font-bold">+</span>
+                  </div>
+                </div>
+              </div>
+            </Slider>
+
+            {isLightboxOpen && (
+              <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+                {/* زر غلق */}
+                <button
+                  className="absolute top-4 right-4 text-white text-3xl font-bold"
+                  onClick={() => setIsLightboxOpen(false)}
+                >
+                  ×
+                </button>
+
+                {/* الصورة المكبرة */}
                 <img
                   src={currentImage}
                   alt={product.name}
-                  loading="lazy"
-                  onLoad={() => setImageLoaded(true)}
-                  className={`w-full h-[clamp(220px,60vw,700px)] object-cover rounded-xl shadow-lg transition-all duration-700 ease-in-out
-                    ${imageLoaded ? 'opacity-100 blur-0' : 'opacity-0 blur-md'}
-                  `}
+                  className="max-h-[90vh] max-w-[90vw] object-contain rounded-lg shadow-lg"
                 />
               </div>
-            </Slider>
+            )}
 
             {product.soldOut && (
               <span className="absolute top-3 left-3 bg-red-600 text-white px-2 py-1 text-[clamp(10px,2.5vw,14px)] font-semibold rounded">
@@ -260,7 +319,10 @@ export default function ProductDetailsPage() {
                 className="flex gap-2 sm:gap-3 overflow-x-auto scroll-smooth py-2 px-8"
               >
                 {product.colors?.map((color, index) => (
-                  <div key={index} className="relative group flex-shrink-0">
+                  <div
+                    key={color.name || index}
+                    className="relative group flex-shrink-0"
+                  >
                     <button
                       onClick={() => handleColorClick(color, index)}
                       className={`aspect-square rounded-full overflow-hidden flex items-center justify-center transition-transform duration-200
@@ -302,33 +364,76 @@ export default function ProductDetailsPage() {
         </div>
 
         {/* === جزء التفاصيل === */}
-        <div className="flex flex-col justify-start space-y-4">
-          <p className="text-gray-500 text-[clamp(12px,3vw,16px)] text-start">
-            Tarhty Store
+        <div className="flex flex-col justify-start space-y-4 px-4 sm:px-6 md:px-0">
+          <p className="text-gray-500 text-[clamp(12px,2.5vw,16px)] text-start">
+            Stripped Store
           </p>
 
           <div className="flex items-center gap-2">
-            <h2 className="text-[clamp(20px,4vw,30px)] font-bold text-gray-900">
+            <h2 className="text-[clamp(20px,5vw,30px)] font-bold text-gray-900 leading-tight">
               {product.name}
             </h2>
           </div>
 
-          <p className="text-start text-[clamp(18px,3.5vw,24px)] font-extrabold text-pink-600">
+          {/* السعر */}
+          <p className="text-start text-[clamp(18px,4vw,24px)] font-extrabold text-pink-600">
             {product.price} EGP
           </p>
 
+          {/* === جزء المقاسات === */}
+          <div className="w-full max-w-[clamp(280px,90vw,600px)] mx-auto mt-6">
+            <h3 className="text-[clamp(14px,3vw,18px)] font-semibold text-gray-800 mb-2 text-start">
+              Select Size
+            </h3>
+
+            <div className="flex gap-2 sm:gap-3 flex-wrap">
+              {product.sizes?.map((size, index) => {
+                const sizeObj =
+                  typeof size === 'string' ? { name: size } : size;
+                const isActive =
+                  selectedSize?.name === sizeObj.name ||
+                  selectedSize === sizeObj.name;
+
+                return (
+                  <button
+                    key={sizeObj.name || index}
+                    onClick={() => {
+                      setSelectedSize(sizeObj);
+                      if (sizeObj.image) {
+                        if (sizeObj.image === currentImage) {
+                          setCurrentImage(sizeObj.image);
+                          setImageLoaded(true);
+                        } else {
+                          setImageLoaded(false);
+                          setCurrentImage(sizeObj.image);
+                        }
+                      }
+                    }}
+                    className={`px-3 sm:px-4 py-2 rounded-lg border transition-all text-[clamp(12px,2.5vw,14px)] sm:text-sm font-medium ${
+                      isActive
+                        ? 'border-pink-600 bg-pink-50 text-pink-700 scale-105'
+                        : 'border-gray-300 bg-white text-gray-700 hover:border-gray-500'
+                    }`}
+                  >
+                    {sizeObj.name}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* === الكمية === */}
           <div className="flex flex-col items-start gap-2">
-            <div className="text-gray-700 font-medium text-[clamp(12px,3vw,16px)]">
+            <div className="text-gray-700 font-medium text-[clamp(12px,2.5vw,16px)]">
               Quantity
             </div>
-            <div className="flex border rounded-lg overflow-hidden px-4">
+            <div className="flex border rounded-lg overflow-hidden">
               <button
                 onClick={incrementQuantity}
                 disabled={product.soldOut}
                 className="w-8 sm:w-10 h-8 sm:h-10 flex items-center justify-center text-gray-800 hover:text-gray-900 disabled:text-gray-400 disabled:cursor-not-allowed"
               >
-                <PlusIcon className="w-4 h-4" />
+                <PlusIcon className="w-4 sm:w-5 h-4 sm:h-5" />
               </button>
 
               <div className="w-8 sm:w-10 h-8 sm:h-10 flex items-center justify-center text-[clamp(14px,3vw,18px)]">
@@ -340,7 +445,7 @@ export default function ProductDetailsPage() {
                 disabled={quantity === 1 || product.soldOut}
                 className="w-8 sm:w-10 h-8 sm:h-10 flex items-center justify-center text-gray-800 hover:text-gray-900 disabled:text-gray-400 disabled:cursor-not-allowed"
               >
-                <MinusIcon className="w-4 h-4" />
+                <MinusIcon className="w-4 sm:w-5 h-4 sm:h-5" />
               </button>
             </div>
           </div>
@@ -352,14 +457,14 @@ export default function ProductDetailsPage() {
                 disabled
                 className="w-full py-3 rounded-lg text-white font-semibold bg-gray-400 cursor-not-allowed text-[clamp(14px,3vw,18px)]"
               >
-                غير متاح حالياً
+                Sold Out
               </button>
             ) : (
               <button
                 onClick={handleAddToCart}
                 className="w-full py-3 rounded-lg text-white font-semibold bg-pink-600 hover:bg-pink-700 transition text-[clamp(14px,3vw,18px)]"
               >
-                أضف إلى السلة
+                Add to Cart
               </button>
             )}
           </div>
@@ -408,6 +513,26 @@ export default function ProductDetailsPage() {
       </div>
 
       <Footer />
+
+      {isLightboxOpen && (
+        <div
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+          onClick={() => setIsLightboxOpen(false)}
+        >
+          <img
+            src={currentImage}
+            alt={product.name}
+            className="max-h-[90vh] max-w-[90vw] object-contain rounded-lg shadow-lg"
+            onClick={(e) => e.stopPropagation()} // عشان الضغط على الصورة نفسها لا يغلق
+          />
+          <button
+            className="absolute top-4 right-4 text-white text-3xl font-bold"
+            onClick={() => setIsLightboxOpen(false)}
+          >
+            ×
+          </button>
+        </div>
+      )}
     </div>
   );
 }
