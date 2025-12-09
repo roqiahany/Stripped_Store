@@ -50,7 +50,7 @@ export default function CheckoutPage() {
     let message = `🟣 *New Order*\n\n👤 *Customer Details*\n`;
     message += `Name: ${form.name}\n`;
     message += `Phone: ${form.phone}\n`;
-    message += `Email: ${form.email}\n`;
+
     message += `Address: ${form.address}\n`;
     message += `Notes: ${form.notes || 'None'}\n\n`;
 
