@@ -253,6 +253,7 @@ export default function CheckoutPage() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
               className="text-center py-20"
+              dir="ltr"
             >
               <h2 className="text-2xl font-bold text-pink-600">
                 ✔ Your Order Has Been Confirmed!
