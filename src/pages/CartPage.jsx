@@ -5,10 +5,13 @@ import Navbar from './../components/Navbar/Navbar';
 import Footer from '../components/footer';
 import { MinusIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // import { MinusIcon } from '@heroicons/react/24/solid';
 import AllProductsPage from './AllProductsPage';
+import CheckoutPage from './CheckoutPage';
 
 export default function CartPage() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const {
     cart,
@@ -247,18 +250,32 @@ export default function CartPage() {
                     {total.toFixed(2)} EGP
                   </span>
                 </h2>
-                <button
+                {/* <button
                   onClick={handleCheckout}
                   className="bg-pink-600 text-white px-35 py-3 my-2 rounded-lg hover:bg-pink-700 transition"
                 >
                   Checkout
+                </button> */}
+
+                {/* <Link
+                  to="/checkout"
+                  className="bg-pink-600 text-white px-35 py-3 my-2 rounded-lg hover:bg-pink-700 transition"
+                >
+                  Checkout
+                </Link> */}
+                <button
+                  onClick={() => navigate('/Checkout')}
+                  className="bg-pink-600 text-white px-35 py-3 my-2 rounded-lg hover:bg-pink-700 transition"
+                >
+                  Checkout
                 </button>
+
                 {/* Clear Cart */}
                 <button
                   onClick={clearCart}
                   className="border border-gray-300 px-6 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 w-full md:w-auto text-center"
                 >
-                  إفراغ السلة
+                  Empty Cart
                 </button>
               </div>
             )}

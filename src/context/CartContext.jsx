@@ -11,6 +11,43 @@ export const CartProvider = ({ children }) => {
   });
 
   // تحميل الكارت من Firestore عند تسجيل الدخول
+  // useEffect(() => {
+  //   const unsubscribe = auth.onAuthStateChanged(async (user) => {
+  //     if (user) {
+  //       const cartRef = doc(db, 'users', user.uid);
+  //       const docSnap = await getDoc(cartRef);
+
+  //       const localCart = JSON.parse(localStorage.getItem('cart')) || [];
+  //       let mergedCart = [...localCart];
+
+  //       if (docSnap.exists() && docSnap.data().cart) {
+  //         const firestoreCart = docSnap.data().cart;
+
+  //         // 🔄 دمج السلتين مع تجميع الكميات لنفس المنتج
+  //         firestoreCart.forEach((item) => {
+  //           const existingItem = mergedCart.find((i) => i.id === item.id);
+  //           if (existingItem) {
+  //             existingItem.quantity += item.quantity;
+  //           } else {
+  //             mergedCart.push(item);
+  //           }
+  //         });
+  //       }
+
+  //       // ✅ حفظ السلة المدمجة في Firestore وlocalStorage
+  //       setCart(mergedCart);
+  //       localStorage.setItem('cart', JSON.stringify(mergedCart));
+  //       await updateDoc(cartRef, { cart: mergedCart });
+  //     } else {
+  //       // المستخدم مش داخل → نحمل السلة من localStorage فقط
+  //       const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
+  //       setCart(savedCart);
+  //     }
+  //   });
+
+  //   return () => unsubscribe();
+  // }, []);
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -23,7 +60,7 @@ export const CartProvider = ({ children }) => {
         if (docSnap.exists() && docSnap.data().cart) {
           const firestoreCart = docSnap.data().cart;
 
-          // 🔄 دمج السلتين مع تجميع الكميات لنفس المنتج
+          // 🔄 دمج السلتين
           firestoreCart.forEach((item) => {
             const existingItem = mergedCart.find((i) => i.id === item.id);
             if (existingItem) {
@@ -34,12 +71,36 @@ export const CartProvider = ({ children }) => {
           });
         }
 
-        // ✅ حفظ السلة المدمجة في Firestore وlocalStorage
+        // ⛔ هنا المشكلة كانت بتحصل: total ما بتحسبوش قبل الطلب
+
+        // 🎯 أضيفي السطر دا تحت دمج السلة مباشرة
+        // const calculatedTotal = mergedCart.reduce(
+        //   (sum, item) => sum + (item.price || 0) * (item.quantity || 1),
+        //   0
+        // );
+
+        const calculatedTotal = mergedCart.reduce(
+          (sum, item) => sum + (item.price || 0) * (item.quantity || 1),
+          0
+        );
+        await updateDoc(cartRef, {
+          cart: mergedCart,
+          total: calculatedTotal,
+        });
+
+        console.log('TOTAL IS: ', calculatedTotal);
+
+        // حفظ السلة
         setCart(mergedCart);
         localStorage.setItem('cart', JSON.stringify(mergedCart));
-        await updateDoc(cartRef, { cart: mergedCart });
+
+        // حفظ total كمان داخل Firestore (اختياري)
+        await updateDoc(cartRef, {
+          cart: mergedCart,
+          total: calculatedTotal,
+        });
       } else {
-        // المستخدم مش داخل → نحمل السلة من localStorage فقط
+        // المستخدم مش داخل
         const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
         setCart(savedCart);
       }
