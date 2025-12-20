@@ -14,6 +14,15 @@ export default function ProductCard({
   const navigate = useNavigate();
   const [loaded, setLoaded] = useState(false);
 
+  const allSizes =
+    product.colors?.flatMap((color) =>
+      color.sizes?.filter((s) => s.available)
+    ) || [];
+
+  const uniqueSizes = Array.from(
+    new Map(allSizes.map((s) => [s.name, s])).values()
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0, y: yOffset }}
@@ -69,24 +78,31 @@ export default function ProductCard({
         )}
 
         {/* Sizes */}
-        {product.sizes?.length > 0 && (
+        {/* {uniqueSizes.length > 0 && (
           <div className="flex flex-wrap items-center gap-1">
             <span className="font-semibold text-gray-500 text-xs sm:text-sm md:text-base">
               Sizes:
             </span>
-            {product.sizes.map((sizeObj, index) => (
+
+            {uniqueSizes.map((size) => (
               <span
-                key={sizeObj.name || index}
-                className="px-2 py-0.5 border rounded-md text-[10px] sm:text-xs md:text-sm bg-gray-100"
+                key={size.name}
+                className={`px-2 py-0.5 border rounded-md text-[10px] sm:text-xs md:text-sm
+          ${
+            size.inStock === false
+              ? 'bg-gray-200 text-gray-400 line-through'
+              : 'bg-gray-100'
+          }
+        `}
               >
-                {sizeObj.name}
+                {size.name}
               </span>
             ))}
           </div>
-        )}
+        )} */}
 
         {/* Colors */}
-        {product.colors?.length > 0 && (
+        {/* {product.colors?.length > 0 && (
           <div className="flex items-center gap-2">
             <span className="font-semibold text-gray-500 text-xs sm:text-sm md:text-base">
               Colors:
@@ -102,14 +118,14 @@ export default function ProductCard({
               ))}
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Sold Out */}
-        {product.soldOut && (
+        {/* {product.soldOut && (
           <p className="text-red-600 font-semibold text-xs sm:text-sm md:text-base mt-1">
             Sold Out
           </p>
-        )}
+        )} */}
       </div>
     </motion.div>
   );

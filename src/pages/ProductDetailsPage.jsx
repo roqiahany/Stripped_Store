@@ -11,6 +11,7 @@ import { db } from '../firebaseConfig';
 import ProductCard from '../components/ProductDetails/ProductCard';
 import Footer from './../components/footer';
 import { useCart } from '../context/CartContext';
+import toast from 'react-hot-toast';
 
 export default function ProductDetailsPage() {
   const { id } = useParams();
@@ -23,10 +24,12 @@ export default function ProductDetailsPage() {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   const [quantity, setQuantity] = useState(1);
-  const [activeColorIndex, setActiveColorIndex] = useState(0);
+
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [product, setProduct] = useState(location.state?.product || null);
   const [selectedSize, setSelectedSize] = useState(null);
+  const [activeColorIndex, setActiveColorIndex] = useState(0);
+  const activeColor = product.colors?.[activeColorIndex];
 
   const [currentImage, setCurrentImage] = useState(
     product ? product.images?.[0] : '/no-image.png'
@@ -147,6 +150,11 @@ export default function ProductDetailsPage() {
   };
 
   const handleAddToCart = () => {
+    if (!selectedSize || !activeColor) {
+      toast.error('Please select color and size');
+      return;
+    }
+
     if (!product) return;
     const productWithSelectedOptions = {
       ...product,
@@ -386,7 +394,7 @@ export default function ProductDetailsPage() {
               Select Size
             </h3>
 
-            <div className="flex gap-2 sm:gap-3 flex-wrap">
+            {/* <div className="flex gap-2 sm:gap-3 flex-wrap">
               {product.sizes?.map((size, index) => {
                 const sizeObj =
                   typeof size === 'string' ? { name: size } : size;
@@ -416,6 +424,32 @@ export default function ProductDetailsPage() {
                     }`}
                   >
                     {sizeObj.name}
+                  </button>
+                );
+              })}
+            </div> */}
+            <div className="flex gap-2 sm:gap-3 flex-wrap">
+              {activeColor?.sizes?.map((size, index) => {
+                const isDisabled =
+                  size.available === false || size.inStock === false;
+                const isActive = selectedSize?.name === size.name;
+
+                return (
+                  <button
+                    key={size.name || index}
+                    disabled={isDisabled}
+                    onClick={() => setSelectedSize(size)}
+                    className={`px-3 sm:px-4 py-2 rounded-lg border transition-all text-sm font-medium
+          ${
+            isDisabled
+              ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              : isActive
+              ? 'border-pink-600 bg-pink-50 text-pink-700 scale-105'
+              : 'border-gray-300 bg-white hover:border-gray-500'
+          }
+        `}
+                  >
+                    {size.name}
                   </button>
                 );
               })}

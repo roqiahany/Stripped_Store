@@ -2,7 +2,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-const ColorSelector = ({ colors, selectedColor, onSelect }) => {
+
+
+const  ColorSelector = ({ colors, selectedColor, onSelect }) => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(selectedColor || null);
 

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import AdminSidebar from '../components/AdminSidebar';
 import ProductTable from '../components/ProductTable';
-import ProductForm from '../components/ProductForm';
+
 import { AdminProductsProvider } from '../context/AdminProductsContext';
+import ProductForm from './../components/ProductForm/ProductForm';
 
 export function AdminDashboardInner() {
   const [editingProduct, setEditingProduct] = useState(null);
