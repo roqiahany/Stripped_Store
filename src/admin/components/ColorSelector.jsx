@@ -98,7 +98,7 @@ const colorMap = {
   Emerald_Green: '#50C878',
   Midnight_Onyx: '#2C2F33',
   Champagne_Quartz: '#F7E7CE',
-  Blue_Chalcedony: '#A9C6C2',
+
   models: '#808080',
   packages: '#FFD700',
 };

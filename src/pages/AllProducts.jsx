@@ -104,7 +104,7 @@ export default function Products() {
           ))}
       </div>
 
-      <TrendingNowSection />
+      {/* <TrendingNowSection /> */}
     </div>
   );
 }

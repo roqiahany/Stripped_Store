@@ -74,28 +74,53 @@ const CategoriesSection = () => {
             : categories.map((cat, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 40 }}
+                  initial={{ opacity: 0, y: 50 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, ease: 'easeOut' }}
                   viewport={{ once: true }}
-                  className="group relative overflow-hidden cursor-pointer"
+                  className="group relative cursor-pointer rounded-3xl overflow-hidden shadow-2xl transition-shadow duration-500"
                   onClick={() => navigate(`/category/${cat.name}`)}
                 >
-                  {/* الصورة */}
-                  <div className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition duration-300 aspect-[4/5]">
-                    <img
-                      src={cat.image}
-                      alt={cat.name}
-                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
-                    />
+                  {/* Perspective container للtilt */}
+                  <div
+                    className="w-full aspect-[4/5] perspective"
+                    style={{ perspective: 1200 }}
+                  >
+                    <motion.div
+                      className="relative w-full h-full overflow-hidden rounded-3xl"
+                      whileHover={{
+                        scale: 1.1,
+                        rotateX: 6,
+                        rotateY: 6,
+                        transition: {
+                          type: 'spring',
+                          stiffness: 140,
+                          damping: 12,
+                        },
+                      }}
+                      style={{ transformStyle: 'preserve-3d' }}
+                    >
+                      {/* الصورة */}
+                      <img
+                        src={cat.image}
+                        alt={cat.name}
+                        className="w-full h-full object-cover object-center transform transition-transform duration-700 ease-out"
+                      />
+
+                      {/* Overlay gradient + dark layer */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500"></div>
+
+                      {/* subtle glow */}
+                      <div className="absolute inset-0 pointer-events-none bg-white/5 shadow-[0_0_50px_10px_rgba(255,192,203,0.2)] opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                    </motion.div>
                   </div>
 
-                  {/* الاسم */}
-                  <div className="flex items-center mt-4 px-1">
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 group-hover:text-pink-600 transition">
+                  {/* الاسم والArrow */}
+                  <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center px-2">
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white drop-shadow-lg group-hover:text-pink-400 transition-colors duration-500">
                       {cat.name}
                     </h3>
-                    <ArrowRight className="text-pink-600 group-hover:translate-x-1 transition-transform duration-300" />
+                    <ArrowRight className="text-white group-hover:text-pink-400 transition-all duration-300 translate-x-0 group-hover:translate-x-2" />
                   </div>
                 </motion.div>
               ))}
