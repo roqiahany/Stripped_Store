@@ -42,7 +42,7 @@ export default function ProductForm({
   ];
   const colorMap = {
     Black_Obsidian_Onyx: '#353839',
-    Blue_Chalcedony: '#A9C6C2',
+
     Onyx_Black: '#0B0B0B',
     Moonstone_Beige: '#D6C6B8',
     Sapphire_Blue: '#0F52BA',
