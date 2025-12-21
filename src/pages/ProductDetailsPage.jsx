@@ -371,6 +371,12 @@ export default function ProductDetailsPage() {
           </div>
         </div>
 
+
+
+
+
+
+
         {/* === جزء التفاصيل === */}
         <div className="flex flex-col justify-start space-y-4 px-4 sm:px-6 md:px-0">
           <p className="text-gray-500 text-[clamp(12px,2.5vw,16px)] text-start">
@@ -388,46 +394,19 @@ export default function ProductDetailsPage() {
             {product.price} EGP
           </p>
 
+          {/* description */}
+          {product.description && (
+            <p className="text-gray-700 text-[clamp(14px,3vw,16px)] text-start whitespace-pre-line">
+              {product.description}
+            </p>
+          )}
+
           {/* === جزء المقاسات === */}
           <div className="w-full max-w-[clamp(280px,90vw,600px)] mx-auto mt-6">
             <h3 className="text-[clamp(14px,3vw,18px)] font-semibold text-gray-800 mb-2 text-start">
               Select Size
             </h3>
 
-            {/* <div className="flex gap-2 sm:gap-3 flex-wrap">
-              {product.sizes?.map((size, index) => {
-                const sizeObj =
-                  typeof size === 'string' ? { name: size } : size;
-                const isActive =
-                  selectedSize?.name === sizeObj.name ||
-                  selectedSize === sizeObj.name;
-
-                return (
-                  <button
-                    key={sizeObj.name || index}
-                    onClick={() => {
-                      setSelectedSize(sizeObj);
-                      if (sizeObj.image) {
-                        if (sizeObj.image === currentImage) {
-                          setCurrentImage(sizeObj.image);
-                          setImageLoaded(true);
-                        } else {
-                          setImageLoaded(false);
-                          setCurrentImage(sizeObj.image);
-                        }
-                      }
-                    }}
-                    className={`px-3 sm:px-4 py-2 rounded-lg border transition-all text-[clamp(12px,2.5vw,14px)] sm:text-sm font-medium ${
-                      isActive
-                        ? 'border-pink-600 bg-pink-50 text-pink-700 scale-105'
-                        : 'border-gray-300 bg-white text-gray-700 hover:border-gray-500'
-                    }`}
-                  >
-                    {sizeObj.name}
-                  </button>
-                );
-              })}
-            </div> */}
             <div className="flex gap-2 sm:gap-3 flex-wrap">
               {activeColor?.sizes?.map((size, index) => {
                 const isDisabled =

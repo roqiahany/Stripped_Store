@@ -9,6 +9,9 @@ export default function ColorsSection({
   handleOpenCropper,
   colorOptions,
   colorMap = {},
+  sizeOptions,
+  selectedSizes,
+  setSelectedSizes,
 }) {
   return (
     <div className="border border-gray-200 p-5 rounded-xl bg-gray-50 space-y-4">
@@ -62,7 +65,7 @@ export default function ColorsSection({
             <p className="text-sm font-semibold capitalize">{color.name}</p>
 
             {/* SIZES */}
-            <div className="flex gap-2 flex-wrap justify-center">
+            {/* <div className="flex gap-2 flex-wrap justify-center">
               {color.sizes.map((size, sizeIndex) => (
                 <button
                   key={sizeIndex}
@@ -85,6 +88,39 @@ export default function ColorsSection({
                   {size.name}
                 </button>
               ))}
+            </div> */}
+
+            {/* SELECT SIZES */}
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-semibold text-gray-600">
+                المقاسات المتاحة
+              </p>
+
+              <div className="flex gap-2 flex-wrap">
+                {sizeOptions.map((size) => {
+                  const isSelected = selectedSizes.includes(size);
+
+                  return (
+                    <button
+                      key={size}
+                      type="button"
+                      onClick={() =>
+                        setSelectedSizes((prev) =>
+                          prev.includes(size)
+                            ? prev.filter((s) => s !== size)
+                            : [...prev, size]
+                        )
+                      }
+                      className={`px-4 py-1 rounded-full border text-sm transition
+            ${
+              isSelected ? 'bg-black text-white' : 'bg-gray-200 text-gray-600'
+            }`}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         ))}

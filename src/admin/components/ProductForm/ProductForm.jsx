@@ -14,7 +14,6 @@ import SubmitButton from './components/SubmitButton';
 
 import getCroppedImg from './../cropImage';
 import { db } from '../../../firebaseConfig';
-// import SizesSection from './components/SizesSection';
 
 export default function ProductForm({
   editingProduct,
@@ -28,14 +27,31 @@ export default function ProductForm({
     'Trending now',
   ];
 
-  const colorOptions = ['red', 'green', 'blue', 'yellow', 'black', 'white'];
+  const colorOptions = [
+    'Black_Obsidian_Onyx',
+
+    'Onyx_Black',
+    'Moonstone_Beige',
+    'Sapphire_Blue',
+    'Emerald_Green',
+    'Midnight_Onyx',
+    'Champagne_Quartz',
+    'Blue_Chalcedony',
+    'models',
+    'packages',
+  ];
   const colorMap = {
-    beige: '#F5F5DC',
-    green: '#008000',
-    blue: '#0000FF',
-    yellow: '#FFFF00',
-    black: '#000000',
-    white: '#FFFFFF',
+    Black_Obsidian_Onyx: '#353839',
+    Blue_Chalcedony: '#A9C6C2',
+    Onyx_Black: '#0B0B0B',
+    Moonstone_Beige: '#D6C6B8',
+    Sapphire_Blue: '#0F52BA',
+    Emerald_Green: '#50C878',
+    Midnight_Onyx: '#2C2F33',
+    Champagne_Quartz: '#F7E7CE',
+    Blue_Chalcedony: '#A9C6C2',
+    models: '#808080',
+    packages: '#FFD700',
   };
 
   // =======================
@@ -52,6 +68,7 @@ export default function ProductForm({
   });
 
   const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+  const [selectedSizes, setSelectedSizes] = useState(['M', 'L', 'XL', 'XXL']);
 
   const [uploading, setUploading] = useState(false);
   const [uploadProgressMap, setUploadProgressMap] = useState({});
@@ -277,13 +294,23 @@ export default function ProductForm({
       }
     }
 
+    const cleanedColors = form.colors.map((color) => ({
+      ...color,
+      sizes: color.sizes.filter((size) => size.inStock),
+    }));
+
     // ✅ إضافة المنتج
     try {
+      const finalForm = {
+        ...form,
+        colors: cleanedColors,
+      };
+
       if (editingProduct) {
-        await updateDoc(doc(db, 'products', editingProduct.id), form);
+        await updateDoc(doc(db, 'products', editingProduct.id), finalForm);
         clearEditing();
       } else {
-        await addDoc(collection(db, 'products'), form);
+        await addDoc(collection(db, 'products'), finalForm);
       }
 
       toast.success('تم الحفظ بنجاح');
@@ -309,7 +336,6 @@ export default function ProductForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-700">إدارة المنتج</h2>
-
       <BasicInfo form={form} setForm={setForm} />
       <Description form={form} setForm={setForm} />
       <CategorySection
@@ -317,14 +343,12 @@ export default function ProductForm({
         value={form.category}
         onSelect={(cat) => setForm({ ...form, category: cat })}
       />
-
       <ImagesUploader
         form={form}
         fileList={fileList}
         uploadProgressMap={uploadProgressMap}
         handleColorImageUpload={handleColorImageUpload}
       />
-
       <ImagesPreview
         form={form}
         fileList={fileList}
@@ -335,7 +359,6 @@ export default function ProductForm({
         retryUploadImage={retryUploadImage}
       />
       {/* <SizesSection colors={form.colors} setForm={setForm} /> */}
-
       <ColorsSection
         form={form}
         setForm={setForm}
@@ -345,6 +368,9 @@ export default function ProductForm({
         handleOpenCropper={handleOpenCropper}
         colorOptions={colorOptions}
         colorMap={colorMap}
+        sizeOptions={sizeOptions}
+        selectedSizes={selectedSizes}
+        setSelectedSizes={setSelectedSizes}
       />
 
       <CropperModal
@@ -359,7 +385,6 @@ export default function ProductForm({
         onClose={() => setShowCropper(false)}
         isUploadingColor={isUploadingColor}
       />
-
       <SubmitButton editingProduct={editingProduct} uploading={uploading} />
     </form>
   );

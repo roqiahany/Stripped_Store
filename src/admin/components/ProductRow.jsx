@@ -1,27 +1,17 @@
 import React from 'react';
 import { Edit, Trash2 } from 'lucide-react';
 const colorMap = {
-  أحمر: '#f87171',
-  أزرق: '#60a5fa',
-  أصفر: '#facc15',
-  أخضر: '#34d399',
-  زهري: '#f472b6',
-  أسود: '#000000',
-  أبيض: '#ffffff',
-  بنفسجى: '#a78bfa',
-  بنى: '#795548',
-  بيج: '#dec3ae',
-  بيبى_بلو: '#90b2d7',
-  بمبى: '#cc9696',
-  مشجر: 'linear-gradient(45deg, #f3ec78, #af4261)',
-  نبيتي: '#6b4f4f',
-  رمادي: '#9ca3af',
-  بني: '#7c4a3a',
-  زيتي: '#4a7c4a',
-  بيبي_بلو: '#90b2d7',
-  بيبي_بينك: '#f4c2d7',
-  كحلي: '#1e3a8a',
-  كشمير: '#d1b2c1',
+  Black_Obsidian_Onyx: '#353839',
+
+  Onyx_Black: '#0B0B0B',
+  Moonstone_Beige: '#D6C6B8',
+  Sapphire_Blue: '#0F52BA',
+  Emerald_Green: '#50C878',
+  Midnight_Onyx: '#2C2F33',
+  Champagne_Quartz: '#F7E7CE',
+  Blue_Chalcedony: '#A9C6C2',
+  models: '#808080',
+  packages: '#FFD700',
 };
 
 export default function ProductRow({

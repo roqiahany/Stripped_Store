@@ -14,6 +14,7 @@ import CartPage from '@pages/CartPage';
 import AdminLogin from '@pages/AdminLogin';
 import CheckoutPage from './pages/CheckoutPage';
 import OrderSuccess from './pages/OrderSuccessPage';
+import Contact from './pages/Contact';
 
 export default function App() {
   return (
@@ -27,11 +28,12 @@ export default function App() {
           <Route path="/category/:categoryName" element={<CategoryPage />} />
           <Route path="/product/:id" element={<ProductDetailsPage />} />
           <Route path="/cart" element={<CartPage />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<AdminLogin />} />
           <Route path="/admin/profile" element={<AdminProfile />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/order-success" element={<OrderSuccess />} />
-          {/*  <Route path="/trending" element={<TrendingPage />} />*/}
+          <Route path="/trending" element={<TrendingPage />} />
           <Route
             path="/admin"
             element={

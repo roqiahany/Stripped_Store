@@ -49,22 +49,21 @@ const PriceFilterSidebar = ({
 
   // Colors
   const colorOptions = [
-    'black',
-    'white',
-    'gray',
-    'blue',
-    'brown',
-    'beige',
-    'pink',
-    'red',
-    'green',
-    'yellow',
-    'purple',
-    'orange',
+    'Black_Obsidian_Onyx',
+    'Blue_Chalcedony',
+    'Onyx_Black',
+    'Moonstone_Beige',
+    'Sapphire_Blue',
+    'Emerald_Green',
+    'Midnight_Onyx',
+    'Champagne_Quartz',
+    'Blue_Chalcedony',
+    'models',
+    'packages',
   ];
 
   // Sizes
-  const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', '2XL'];
+  // const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', '2XL'];
 
   // Categories
   const categoryOptions = ['T-Shirts', 'Hoodies', 'Pants', 'Jackets', 'Shoes'];
