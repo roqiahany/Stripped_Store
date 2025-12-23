@@ -256,9 +256,9 @@ export default function ProductDetailsPage() {
               className="w-full max-w-[clamp(280px,90vw,650px)]"
             >
               <div className="flex justify-center">
-                <div className="relative w-full bg-gray-100 rounded-xl group flex justify-center">
+                <div className="relative w-full bg-gray-100 rounded-xl group flex justify-center overflow-hidden">
                   {!imageLoaded && (
-                    <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-xl z-10" />
+                    <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-xl z-10 overflow-hidden" />
                   )}
 
                   <img
@@ -267,6 +267,8 @@ export default function ProductDetailsPage() {
                     loading="lazy"
                     onLoad={() => setImageLoaded(true)}
                     className="
+                    overflow-hidden
+          rounded-xl
           w-auto
           max-w-full
           h-auto
