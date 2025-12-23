@@ -64,32 +64,6 @@ export default function ColorsSection({
             {/* COLOR NAME */}
             <p className="text-sm font-semibold capitalize">{color.name}</p>
 
-            {/* SIZES */}
-            {/* <div className="flex gap-2 flex-wrap justify-center">
-              {color.sizes.map((size, sizeIndex) => (
-                <button
-                  key={sizeIndex}
-                  type="button"
-                  onClick={() =>
-                    setForm((prev) => {
-                      const updated = [...prev.colors];
-                      updated[colorIndex].sizes[sizeIndex].inStock =
-                        !updated[colorIndex].sizes[sizeIndex].inStock;
-                      return { ...prev, colors: updated };
-                    })
-                  }
-                  className={`px-4 py-1 rounded-full border text-sm transition
-              ${
-                size.inStock
-                  ? 'bg-black text-white'
-                  : 'bg-gray-200 text-gray-500'
-              }`}
-                >
-                  {size.name}
-                </button>
-              ))}
-            </div> */}
-
             {/* SELECT SIZES */}
             <div className="flex flex-col gap-2">
               <p className="text-sm font-semibold text-gray-600">

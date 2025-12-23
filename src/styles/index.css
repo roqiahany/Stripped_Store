@@ -118,6 +118,10 @@ button {
   height: auto !important;
 }
 
+.reactEasyCrop_CropArea {
+  box-shadow: 0 0 0 9999px rgba(68, 2, 2, 0.9) !important;
+}
+
 :root {
   --gold-50: #b99470;
   --gold-100: #b38e6c;

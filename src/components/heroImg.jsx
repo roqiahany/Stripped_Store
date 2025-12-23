@@ -1,4 +1,4 @@
-import imgbanner from '../assets/img-Banner-2.png';
+import imgbanner from '../assets/img-Banner-2.jpg';
 import AllProductsPage from './../pages/AllProductsPage';
 import { useNavigate } from 'react-router-dom';
 const ImageBanner = () => {
@@ -13,7 +13,7 @@ const ImageBanner = () => {
       />
 
       {/* المحتوى فوق الصورة */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center sm:justify-end pb-12 sm:pb-16 text-center text-white px-4">
+      <div className="absolute inset-0 flex flex-col items-center justify-end sm:justify-end pb-8 sm:pb-12 text-center text-white px-4">
         <a
           onClick={() => navigate('/all-products')}
           className="

@@ -221,15 +221,64 @@ export default function ProductForm({
 
   const handleCropComplete = (_, pixels) => setCroppedAreaPixels(pixels);
 
+  // const saveCroppedImage = async () => {
+  //   if (!croppedAreaPixels || isUploadingColor) return;
+
+  //   setIsUploadingColor(true);
+
+  //   try {
+  //     const cropped = await getCroppedImg(imageToCrop, croppedAreaPixels);
+  //     const blob = await (await fetch(cropped)).blob();
+
+  //     const data = new FormData();
+  //     data.append('file', blob);
+  //     data.append('upload_preset', 'Tarhty_Store');
+
+  //     const res = await axios.post(
+  //       'https://api.cloudinary.com/v1_1/dmtbsptpg/image/upload',
+  //       data,
+  //       {
+  //         onUploadProgress: (e) => {
+  //           const percent = Math.round((e.loaded * 100) / e.total);
+  //           console.log('Uploading cropped image:', percent + '%');
+  //         },
+  //       }
+  //     );
+
+  //     setForm((prev) => ({
+  //       ...prev,
+  //       colors: [
+  //         ...prev.colors,
+  //         {
+  //           name: colorName,
+  //           image: res.data.secure_url,
+  //           imageIndex: selectedImageIndex,
+  //           sizes: sizeOptions.map((size) => ({
+  //             name: size,
+  //             available: true,
+  //           })),
+  //         },
+  //       ],
+  //     }));
+
+  //     toast.success('تم رفع اللون بنجاح');
+  //   } catch (err) {
+  //     console.error(err);
+  //     toast.error('فشل رفع اللون');
+  //   } finally {
+  //     setIsUploadingColor(false);
+  //     setShowCropper(false);
+  //     setColorName('');
+  //     setSelectedImageIndex(null);
+  //   }
+  // };
   const saveCroppedImage = async () => {
     if (!croppedAreaPixels || isUploadingColor) return;
 
     setIsUploadingColor(true);
 
     try {
-      const cropped = await getCroppedImg(imageToCrop, croppedAreaPixels);
-      const blob = await (await fetch(cropped)).blob();
-
+      const blob = await getCroppedImg(imageToCrop, croppedAreaPixels, 'white'); // خلفية بيضاء
       const data = new FormData();
       data.append('file', blob);
       data.append('upload_preset', 'Tarhty_Store');
@@ -253,10 +302,7 @@ export default function ProductForm({
             name: colorName,
             image: res.data.secure_url,
             imageIndex: selectedImageIndex,
-            sizes: sizeOptions.map((size) => ({
-              name: size,
-              available: true,
-            })),
+            sizes: sizeOptions.map((size) => ({ name: size, available: true })),
           },
         ],
       }));
@@ -290,7 +336,7 @@ export default function ProductForm({
 
     // ✅ تحقق من وجود مقاس واحد على الأقل لكل لون
     for (const color of form.colors) {
-      const hasSize = color.sizes.some((s) => s.inStock || size.available);
+      const hasSize = color.sizes.some((s) => s.inStock || s.available);
       if (!hasSize) {
         toast.error(`اختاري مقاس واحد على الأقل للون ${color.name}`);
         return;
@@ -387,6 +433,7 @@ export default function ProductForm({
         saveCroppedImage={saveCroppedImage}
         onClose={() => setShowCropper(false)}
         isUploadingColor={isUploadingColor}
+        backgroundColor="transparent"
       />
       <SubmitButton editingProduct={editingProduct} uploading={uploading} />
     </form>
