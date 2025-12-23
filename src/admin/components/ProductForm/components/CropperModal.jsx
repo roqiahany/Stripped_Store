@@ -22,7 +22,10 @@ export default function CropperModal({
             image={imageToCrop}
             crop={crop}
             zoom={zoom}
+            minZoom={0.5}
+            maxZoom={3}
             aspect={1}
+            restrictPosition={false}
             onCropChange={setCrop}
             onZoomChange={setZoom}
             onCropComplete={handleCropComplete}

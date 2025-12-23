@@ -178,6 +178,9 @@ export default function ProductForm({
     if (!colorName) return toast.error(' يرجى اختيار اسم اللون أولاً!');
     if (selectedImageIndex === null)
       return toast.error(' يرجى اختيار صورة للون!');
+
+    setZoom(0.8); // 👈 مهم
+    setCrop({ x: 0, y: 0 });
     setImageToCrop(
       colorFile
         ? URL.createObjectURL(colorFile)
@@ -287,7 +290,7 @@ export default function ProductForm({
 
     // ✅ تحقق من وجود مقاس واحد على الأقل لكل لون
     for (const color of form.colors) {
-      const hasSize = color.sizes.some((s) => s.inStock);
+      const hasSize = color.sizes.some((s) => s.inStock || size.available);
       if (!hasSize) {
         toast.error(`اختاري مقاس واحد على الأقل للون ${color.name}`);
         return;
@@ -296,7 +299,7 @@ export default function ProductForm({
 
     const cleanedColors = form.colors.map((color) => ({
       ...color,
-      sizes: color.sizes.filter((size) => size.inStock),
+      sizes: color.sizes.filter((size) => size.inStock || size.available),
     }));
 
     // ✅ إضافة المنتج

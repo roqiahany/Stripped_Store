@@ -173,6 +173,7 @@ export default function ProductDetailsPage() {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
+    adaptiveHeight: true,
     arrows: true,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
@@ -254,24 +255,42 @@ export default function ProductDetailsPage() {
               {...sliderSettings}
               className="w-full max-w-[clamp(280px,90vw,650px)]"
             >
-              <div className="flex justify-center items-center overflow-hidden relative">
-                {/* main image skeleton overlay */}
-                {!imageLoaded && (
-                  <div className="absolute inset-0 rounded-xl bg-gray-200 animate-pulse z-10"></div>
-                )}
+              <div className="flex justify-center">
+                <div className="relative w-full bg-gray-100 rounded-xl group flex justify-center">
+                  {!imageLoaded && (
+                    <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-xl z-10" />
+                  )}
 
-                <div className="relative w-full flex justify-center group">
                   <img
                     src={currentImage}
                     alt={product.name}
                     loading="lazy"
                     onLoad={() => setImageLoaded(true)}
-                    className="w-full h-[clamp(220px,45vw,550px)] object-cover rounded-xl shadow-lg transition-all duration-700 ease-in-out"
+                    className="
+          w-auto
+          max-w-full
+          h-auto
+          max-h-[80vh]
+          object-contain
+          transition-transform
+          duration-500
+          ease-in-out
+          group-hover:scale-105
+        "
                   />
 
-                  {/* أيقونة التكبير تظهر عند الهوف */}
+                  {/* Hover */}
                   <div
-                    className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition cursor-pointer rounded-xl"
+                    className="
+          absolute inset-0
+          flex items-center justify-center
+          bg-black/30
+          opacity-0
+          group-hover:opacity-100
+          transition
+          cursor-pointer
+          rounded-xl
+        "
                     onClick={() => setIsLightboxOpen(true)}
                   >
                     <span className="text-white text-4xl font-bold">+</span>
@@ -370,12 +389,6 @@ export default function ProductDetailsPage() {
             </div>
           </div>
         </div>
-
-
-
-
-
-
 
         {/* === جزء التفاصيل === */}
         <div className="flex flex-col justify-start space-y-4 px-4 sm:px-6 md:px-0">
