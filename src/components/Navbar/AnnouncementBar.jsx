@@ -27,6 +27,19 @@ const AnnouncementBar = () => {
         <span className="mr-8">
           ✨ Free Shipping on Orders Above 2000 LE ✨
         </span>
+        <span className="mr-8">
+          ✨ Free Shipping on Orders Above 2000 LE ✨
+        </span>
+        <span className="mr-8">
+          ✨ Free Shipping on Orders Above 2000 LE ✨
+        </span>
+
+        <span className="mr-8">
+          ✨ Free Shipping on Orders Above 2000 LE ✨
+        </span>
+        <span className="mr-8">
+          ✨ Free Shipping on Orders Above 2000 LE ✨
+        </span>
       </div>
     </div>
   );

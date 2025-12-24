@@ -106,7 +106,7 @@ const CategoryPage = () => {
           dir="ltr"
         >
           {/* الزر نفسه */}
-          <div className="relative inline-block">
+          {/* <div className="relative inline-block">
             <button
               onClick={() => setShowFilter(!showFilter)}
               className="flex items-center gap-2 bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg transition"
@@ -129,7 +129,7 @@ const CategoryPage = () => {
               </svg>
             </button>
 
-            {/* البوب اب */}
+            {/* البوب اب 
             {showFilter && (
               <div className="absolute top-full mt-2 left-0 z-50 animate-fadeIn">
                 <PriceFilterSidebar
@@ -146,7 +146,7 @@ const CategoryPage = () => {
                 />
               </div>
             )}
-          </div>
+          </div> */}
 
           {/* عدد المنتجات الديناميكي */}
           <div className="text-gray-700 font-medium">

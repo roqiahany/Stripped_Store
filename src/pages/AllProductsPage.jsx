@@ -98,7 +98,7 @@ const AllProductsPage = () => {
         dir="ltr"
       >
         {/* Filter */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
+        {/* <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
           <div className="relative inline-block">
             <button
               onClick={() => setShowFilter(!showFilter)}
@@ -129,7 +129,7 @@ const AllProductsPage = () => {
 
             {showFilter && (
               <>
-                {/* 🟣 Desktop Sidebar ثابت */}
+                🟣 Desktop Sidebar ثابت 
                 <div className="hidden md:block absolute top-full mt-2 left-0 z-50">
                   <PriceFilterSidebar
                     min={min}
@@ -145,7 +145,7 @@ const AllProductsPage = () => {
                   />
                 </div>
 
-                {/* 🔵 Mobile Modal */}
+                 🔵 Mobile Modal 
                 <div className="md:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-end">
                   <div
                     className="
@@ -159,7 +159,7 @@ const AllProductsPage = () => {
       animate-slideUp
     "
                   >
-                    {/* Close Button */}
+                    {/* Close Button 
                     <div className="flex justify-end mb-3">
                       <button
                         onClick={() => setShowFilter(false)}
@@ -169,7 +169,7 @@ const AllProductsPage = () => {
                       </button>
                     </div>
 
-                    {/* Sidebar Content */}
+                    {/* Sidebar Content
                     <PriceFilterSidebar
                       min={min}
                       max={max}
@@ -192,7 +192,7 @@ const AllProductsPage = () => {
             {filteredProducts.length} product
             {filteredProducts.length !== 1 && 's'}
           </div>
-        </div>
+        </div> */}
 
         {/* ⭐ GRID */}
         {loading ? (
