@@ -30,14 +30,37 @@ export default function ProductDetailsPage() {
   const [selectedSize, setSelectedSize] = useState(null);
   const [activeColorIndex, setActiveColorIndex] = useState(0);
   const activeColor = product.colors?.[activeColorIndex];
+  const [activeColorProduct, setActiveColor] = useState(null);
 
-  const [currentImage, setCurrentImage] = useState(
-    product ? product.images?.[0] : '/no-image.png'
-  );
+  const [currentImage, setCurrentImage] = useState(null);
+
   const [imageLoaded, setImageLoaded] = useState(false); // for main image skeleton/blur
   const [showAllColors, setShowAllColors] = useState(false);
 
   const { addToCart } = useCart();
+  const productColor = product?.colors?.[0];
+  const colorMap = {
+    Black_Obsidian_Onyx: '#353839',
+
+    Onyx_Black: '#0B0B0B',
+    Moonstone_Beige: '#D6C6B8',
+    Sapphire_Blue: '#0F52BA',
+    Emerald_Green: '#50C878',
+    Midnight_Onyx: '#2C2F33',
+    Champagne_Quartz: '#F7E7CE',
+    Blue_Chalcedony: '#A9C6C2',
+    models: '#808080',
+    packages: '#FFD700',
+  };
+
+  const colorName = product.colors[0].name; // مثلا "Black_Obsidian_Onyx"
+  const colorHex = colorMap[colorName]; // "#353839"
+
+  useEffect(() => {
+    if (product?.colors?.length) {
+      setActiveColor(product.colors[0]);
+    }
+  }, [product]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -120,6 +143,13 @@ export default function ProductDetailsPage() {
     };
 
     fetchRecommended();
+  }, [product]);
+
+  useEffect(() => {
+    if (!product) return;
+
+    const firstColorImage = product.colors?.[0]?.image;
+    setCurrentImage(firstColorImage || product.images?.[0] || '/no-image.png');
   }, [product]);
 
   // quantity handlers
@@ -326,12 +356,11 @@ export default function ProductDetailsPage() {
               </span>
             )}
           </div>
-
           {/* === جزء الألوان === */}
           <div className="flex flex-col gap-2 mt-4 w-full max-w-[clamp(280px,90vw,600px)] mx-auto">
             <div className="relative w-full">
               {/* left arrow */}
-              <button
+              {/* <button
                 onClick={() => {
                   document
                     .getElementById('colorsScroll')
@@ -340,10 +369,10 @@ export default function ProductDetailsPage() {
                 className="aspect-square h-8 flex items-center justify-center absolute left-0 top-1/2 -translate-y-1/2 bg-white/80 text-gray-700 rounded-full p-2 shadow-md hover:bg-white transition z-10"
               >
                 ‹
-              </button>
+              </button> */}
 
               {/* colors strip */}
-              <div
+              {/* <div
                 id="colorsScroll"
                 className="flex gap-2 sm:gap-3 overflow-x-auto scroll-smooth py-2 px-8"
               >
@@ -375,10 +404,30 @@ export default function ProductDetailsPage() {
                     </button>
                   </div>
                 ))}
+              </div> */}
+              <div className="flex gap-3 justify-start">
+                {product.colors?.map((color, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleColorClick(color, index)}
+                    className={`w-12 h-12 rounded-full border-2 overflow-hidden
+        ${
+          activeColorIndex === index
+            ? 'border-pink-600 scale-110'
+            : 'border-gray-300'
+        }`}
+                  >
+                    <img
+                      src={color.image}
+                      alt={color.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
               </div>
 
               {/* right arrow */}
-              <button
+              {/* <button
                 onClick={() => {
                   document
                     .getElementById('colorsScroll')
@@ -387,7 +436,7 @@ export default function ProductDetailsPage() {
                 className="aspect-square h-8 flex items-center justify-center absolute right-0 top-1/2 -translate-y-1/2 bg-white/80 text-gray-700 rounded-full p-2 shadow-md hover:bg-white transition z-10"
               >
                 ›
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
@@ -414,6 +463,31 @@ export default function ProductDetailsPage() {
             <p className="text-gray-700 text-[clamp(14px,3vw,16px)] text-start whitespace-pre-line">
               {product.description}
             </p>
+          )}
+
+          {/* === لون المنتج === */}
+          {productColor && (
+            <div className="mt-6">
+              <h3 className="text-[clamp(14px,3vw,18px)] font-semibold text-gray-800 mb-2 text-start">
+                Color
+              </h3>
+
+              <div className="flex items-center gap-3">
+                {/* الدايرة */}
+
+                <div
+                  className="w-6 h-6 rounded-full border border-gray-300"
+                  style={{
+                    backgroundColor: colorHex || '#fff', // fallback لو اللون مش موجود
+                  }}
+                />
+
+                {/* اسم اللون */}
+                <span className="text-gray-700 ml-2">
+                  {colorName.replace(/_/g, ' ')}
+                </span>
+              </div>
+            </div>
           )}
 
           {/* === جزء المقاسات === */}

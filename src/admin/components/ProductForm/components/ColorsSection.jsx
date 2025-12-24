@@ -71,7 +71,7 @@ export default function ColorsSection({
               </p>
 
               <div className="flex gap-2 flex-wrap">
-                {sizeOptions.map((size) => {
+                {selectedSizes.map((size) => {
                   const isSelected = selectedSizes.includes(size);
 
                   return (

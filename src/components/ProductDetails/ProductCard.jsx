@@ -16,12 +16,30 @@ export default function ProductCard({
 
   const allSizes =
     product.colors?.flatMap((color) =>
-      color.sizes?.filter((s) => s.available)
+      color.sizes?.filter((s) => s.available )
     ) || [];
 
   const uniqueSizes = Array.from(
     new Map(allSizes.map((s) => [s.name, s])).values()
   );
+
+    const colorMap = {
+    Black_Obsidian_Onyx: '#353839',
+
+    Onyx_Black: '#0B0B0B',
+    Moonstone_Beige: '#D6C6B8',
+    Sapphire_Blue: '#0F52BA',
+    Emerald_Green: '#50C878',
+    Midnight_Onyx: '#2C2F33',
+    Champagne_Quartz: '#F7E7CE',
+    Blue_Chalcedony: '#A9C6C2',
+    models: '#808080',
+    packages: '#FFD700',
+  }; 
+
+
+  const colorName = product.colors[0].name; // مثلا "Black_Obsidian_Onyx"
+const colorHex = colorMap[colorName]; // "#353839"
 
   return (
     <motion.div
@@ -71,61 +89,29 @@ export default function ProductCard({
         </p>
 
         {/* Category */}
-        {product.category && (
+        {/* {product.category && (
           <p className="text-gray-500 text-xs sm:text-sm md:text-base text-left">
             <span className="font-semibold">Category:</span> {product.category}
           </p>
         )}
+ */}
 
-        {/* Sizes */}
-        {/* {uniqueSizes.length > 0 && (
-          <div className="flex flex-wrap items-center gap-1">
-            <span className="font-semibold text-gray-500 text-xs sm:text-sm md:text-base">
-              Sizes:
-            </span>
+  
+       {/* Colors */}
+{product.colors?.[0] && (
+  <div className="flex items-center gap-2 mt-2">
+    <div
+      className="w-4 h-4 rounded-full border border-gray-300"
+      style={{
+        backgroundColor: colorMap[product.colors[0].name] || '#fff',
+      }}
+    />
+    <span className="text-gray-700 text-sm">
+      {product.colors[0].name.replace(/_/g, ' ')}
+    </span>
+  </div>
+)}
 
-            {uniqueSizes.map((size) => (
-              <span
-                key={size.name}
-                className={`px-2 py-0.5 border rounded-md text-[10px] sm:text-xs md:text-sm
-          ${
-            size.inStock === false
-              ? 'bg-gray-200 text-gray-400 line-through'
-              : 'bg-gray-100'
-          }
-        `}
-              >
-                {size.name}
-              </span>
-            ))}
-          </div>
-        )} */}
-
-        {/* Colors */}
-        {/* {product.colors?.length > 0 && (
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-gray-500 text-xs sm:text-sm md:text-base">
-              Colors:
-            </span>
-            <div className="flex gap-1 flex-wrap">
-              {product.colors.map((c) => (
-                <div
-                  key={c.name}
-                  className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full border"
-                  title={c.name}
-                  style={{ backgroundColor: c.name }}
-                />
-              ))}
-            </div>
-          </div>
-        )} */}
-
-        {/* Sold Out */}
-        {/* {product.soldOut && (
-          <p className="text-red-600 font-semibold text-xs sm:text-sm md:text-base mt-1">
-            Sold Out
-          </p>
-        )} */}
       </div>
     </motion.div>
   );

@@ -10,40 +10,70 @@ const CategoriesSection = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const CATEGORY_IMAGES = {
+    'Quarter-Zip Ribbed Pullover':
+      'https://res.cloudinary.com/dmtbsptpg/image/upload/v1766502973/sfhcdakolsgupwxxiwnz.jpg',
+    'Hooded sherpa jacket':
+      'https://res.cloudinary.com/dmtbsptpg/image/upload/v1766225076/z3vazcmn6gmhctqescyu.jpg',
+    'Sherpa jacket':
+      'https://res.cloudinary.com/dmtbsptpg/image/upload/v1766503111/eplnfwxmhdju3r7dmecb.jpg',
+
+    // 'Trending now':
+    //   'https://res.cloudinary.com/dmtbsptpg/image/upload/v1766500810/p00odisqcxgqxylds2nf.png',
+  };
+
+  // useEffect(() => {
+  //   const fetchCategoriesWithImages = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const productsSnapshot = await getDocs(collection(db, 'products'));
+  //       const products = productsSnapshot.docs.map((doc) => doc.data());
+
+  //       const categoryMap = new Map();
+
+  //       products.forEach((product) => {
+  //         const category = product.category;
+  //         const firstImage = product.images?.[0];
+  //         if (category && firstImage && !categoryMap.has(category)) {
+  //           categoryMap.set(category, firstImage);
+  //         }
+  //       });
+
+  //       const formatted = Array.from(categoryMap, ([name, image]) => ({
+  //         name,
+  //         image,
+  //       }));
+
+  //       // حتى لو البيانات رجعت بسرعة، خلي الـ skeleton ظاهر نص ثانية على الأقل
+  //       setTimeout(() => {
+  //         setCategories(formatted);
+  //         setLoading(false);
+  //       }, 500);
+  //     } catch (error) {
+  //       console.error('Error fetching categories:', error);
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchCategoriesWithImages();
+  // }, []);
+
   useEffect(() => {
-    const fetchCategoriesWithImages = async () => {
-      try {
-        setLoading(true);
-        const productsSnapshot = await getDocs(collection(db, 'products'));
-        const products = productsSnapshot.docs.map((doc) => doc.data());
+    const fetchCategories = async () => {
+      setLoading(true);
 
-        const categoryMap = new Map();
+      const formatted = Object.keys(CATEGORY_IMAGES).map((name) => ({
+        name,
+        image: CATEGORY_IMAGES[name],
+      }));
 
-        products.forEach((product) => {
-          const category = product.category;
-          const firstImage = product.images?.[0];
-          if (category && firstImage && !categoryMap.has(category)) {
-            categoryMap.set(category, firstImage);
-          }
-        });
-
-        const formatted = Array.from(categoryMap, ([name, image]) => ({
-          name,
-          image,
-        }));
-
-        // حتى لو البيانات رجعت بسرعة، خلي الـ skeleton ظاهر نص ثانية على الأقل
-        setTimeout(() => {
-          setCategories(formatted);
-          setLoading(false);
-        }, 500);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
+      setTimeout(() => {
+        setCategories(formatted);
         setLoading(false);
-      }
+      }, 500);
     };
 
-    fetchCategoriesWithImages();
+    fetchCategories();
   }, []);
 
   const SkeletonCard = () => (

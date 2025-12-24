@@ -67,7 +67,7 @@ export default function ProductForm({
     soldOut: false,
   });
 
-  const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+  // const sizeOptions = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
   const [selectedSizes, setSelectedSizes] = useState(['M', 'L', 'XL', 'XXL']);
 
   const [uploading, setUploading] = useState(false);
@@ -302,7 +302,10 @@ export default function ProductForm({
             name: colorName,
             image: res.data.secure_url,
             imageIndex: selectedImageIndex,
-            sizes: sizeOptions.map((size) => ({ name: size, available: true })),
+            sizes: selectedSizes.map((size) => ({
+              name: size,
+              available: true,
+            })),
           },
         ],
       }));
@@ -417,7 +420,7 @@ export default function ProductForm({
         handleOpenCropper={handleOpenCropper}
         colorOptions={colorOptions}
         colorMap={colorMap}
-        sizeOptions={sizeOptions}
+        // sizeOptions={sizeOptions}
         selectedSizes={selectedSizes}
         setSelectedSizes={setSelectedSizes}
       />
