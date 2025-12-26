@@ -10,44 +10,6 @@ export const CartProvider = ({ children }) => {
     return storedCart ? JSON.parse(storedCart) : [];
   });
 
-  // تحميل الكارت من Firestore عند تسجيل الدخول
-  // useEffect(() => {
-  //   const unsubscribe = auth.onAuthStateChanged(async (user) => {
-  //     if (user) {
-  //       const cartRef = doc(db, 'users', user.uid);
-  //       const docSnap = await getDoc(cartRef);
-
-  //       const localCart = JSON.parse(localStorage.getItem('cart')) || [];
-  //       let mergedCart = [...localCart];
-
-  //       if (docSnap.exists() && docSnap.data().cart) {
-  //         const firestoreCart = docSnap.data().cart;
-
-  //         // 🔄 دمج السلتين مع تجميع الكميات لنفس المنتج
-  //         firestoreCart.forEach((item) => {
-  //           const existingItem = mergedCart.find((i) => i.id === item.id);
-  //           if (existingItem) {
-  //             existingItem.quantity += item.quantity;
-  //           } else {
-  //             mergedCart.push(item);
-  //           }
-  //         });
-  //       }
-
-  //       // ✅ حفظ السلة المدمجة في Firestore وlocalStorage
-  //       setCart(mergedCart);
-  //       localStorage.setItem('cart', JSON.stringify(mergedCart));
-  //       await updateDoc(cartRef, { cart: mergedCart });
-  //     } else {
-  //       // المستخدم مش داخل → نحمل السلة من localStorage فقط
-  //       const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
-  //       setCart(savedCart);
-  //     }
-  //   });
-
-  //   return () => unsubscribe();
-  // }, []);
-
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -70,14 +32,6 @@ export const CartProvider = ({ children }) => {
             }
           });
         }
-
-        // ⛔ هنا المشكلة كانت بتحصل: total ما بتحسبوش قبل الطلب
-
-        // 🎯 أضيفي السطر دا تحت دمج السلة مباشرة
-        // const calculatedTotal = mergedCart.reduce(
-        //   (sum, item) => sum + (item.price || 0) * (item.quantity || 1),
-        //   0
-        // );
 
         const calculatedTotal = mergedCart.reduce(
           (sum, item) => sum + (item.price || 0) * (item.quantity || 1),
@@ -151,22 +105,26 @@ export const CartProvider = ({ children }) => {
       return updatedCart;
     });
   };
-  const addToCart = (item, quantity = 1, selectedSize = null) => {
+  const addToCart = (item, quantity = 1, selectedSize = null, discount = 0) => {
     setCart((prev) => {
-      // نشوف هل موجود نفس المنتج بنفس الحجم
       const exist = prev.find(
         (i) => i.id === item.id && i.selectedSize?.name === selectedSize?.name
       );
+
+      const finalPrice = item.price * (1 - discount / 100);
 
       let updatedCart;
       if (exist) {
         updatedCart = prev.map((i) =>
           i.id === item.id && i.selectedSize?.name === selectedSize?.name
-            ? { ...i, quantity: i.quantity + quantity }
+            ? { ...i, quantity: i.quantity + quantity, finalPrice }
             : i
         );
       } else {
-        updatedCart = [...prev, { ...item, quantity, selectedSize }];
+        updatedCart = [
+          ...prev,
+          { ...item, quantity, selectedSize, finalPrice },
+        ];
       }
 
       localStorage.setItem('cart', JSON.stringify(updatedCart));
@@ -207,6 +165,7 @@ export const CartProvider = ({ children }) => {
         removeFromCart,
         clearCart,
         resetCart,
+        setCart,
         incrementQuantity,
         decrementQuantity,
       }}

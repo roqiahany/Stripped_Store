@@ -12,11 +12,13 @@ import ProductCard from '../components/ProductDetails/ProductCard';
 import Footer from './../components/footer';
 import { useCart } from '../context/CartContext';
 import toast from 'react-hot-toast';
+import { useRef } from 'react';
 
 export default function ProductDetailsPage() {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const sliderRef = useRef(null);
 
   // states
   const [loadingProduct, setLoadingProduct] = useState(true);
@@ -36,6 +38,7 @@ export default function ProductDetailsPage() {
 
   const [imageLoaded, setImageLoaded] = useState(false); // for main image skeleton/blur
   const [showAllColors, setShowAllColors] = useState(false);
+  const [images, setImages] = useState(product.images || []);
 
   const { addToCart } = useCart();
   const productColor = product?.colors?.[0];
@@ -55,6 +58,7 @@ export default function ProductDetailsPage() {
 
   const colorName = product.colors[0].name; // مثلا "Black_Obsidian_Onyx"
   const colorHex = colorMap[colorName]; // "#353839"
+  // const images = product.images || [currentImage];
 
   useEffect(() => {
     if (product?.colors?.length) {
@@ -157,26 +161,48 @@ export default function ProductDetailsPage() {
   const decrementQuantity = () =>
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
+  // const handleColorClick = (color, index) => {
+  //   setActiveColorIndex(index);
+
+  //   // لو اللون عنده image → استعمله مباشرة
+  //   if (color.image) {
+  //     setCurrentImage(color.image);
+  //     return;
+  //   }
+
+  //   // لو مفيش صورة في اللون → استخدم صورة المقاس
+  //   if (
+  //     selectedSize &&
+  //     typeof selectedSize === 'object' &&
+  //     selectedSize.image
+  //   ) {
+  //     setCurrentImage(selectedSize.image);
+  //     return;
+  //   }
+
+  //   // لو مفيش أي صورة → خلي الصورة الحالية بدون تغيير
+  // };
+  // const handleColorClick = (color, index) => {
+  //   setActiveColorIndex(index);
+
+  //   // لو اللون ليه صور
+  //   if (color.images && color.images.length > 0) {
+  //     setImages(color.images);
+  //     setCurrentImage(color.images[0]);
+
+  //     // رجّعي السلايدر لأول صورة
+  //     setTimeout(() => {
+  //       sliderRef.current?.slickGoTo(0);
+  //     }, 0);
+  //   }
+  // };
   const handleColorClick = (color, index) => {
     setActiveColorIndex(index);
 
-    // لو اللون عنده image → استعمله مباشرة
-    if (color.image) {
-      setCurrentImage(color.image);
-      return;
+    if (typeof color.imageIndex === 'number') {
+      sliderRef.current?.slickGoTo(color.imageIndex);
+      setCurrentImage(product.images[color.imageIndex]);
     }
-
-    // لو مفيش صورة في اللون → استخدم صورة المقاس
-    if (
-      selectedSize &&
-      typeof selectedSize === 'object' &&
-      selectedSize.image
-    ) {
-      setCurrentImage(selectedSize.image);
-      return;
-    }
-
-    // لو مفيش أي صورة → خلي الصورة الحالية بدون تغيير
   };
 
   const handleAddToCart = () => {
@@ -197,23 +223,53 @@ export default function ProductDetailsPage() {
   };
 
   // slider settings (same as yours)
+  // const sliderSettings = {
+  //   dots: true,
+  //   infinite: true,
+  //   speed: 500,
+  //   slidesToShow: 1,
+  //   slidesToScroll: 1,
+  //   adaptiveHeight: true,
+  //   arrows: true,
+  //   nextArrow: <NextArrow />,
+  //   prevArrow: <PrevArrow />,
+  //   appendDots: (dots) => (
+  //     <ul className="absolute bottom-4 flex justify-center gap-2 w-full">
+  //       {dots}
+  //     </ul>
+  //   ),
+  //   customPaging: (i) => (
+  //     <div className="w-3 h-3 rounded-full bg-pink-300 hover:bg-pink-500"></div>
+  //   ),
+  // };
+
   const sliderSettings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
     adaptiveHeight: true,
-    arrows: true,
+    arrows: false,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
+
     appendDots: (dots) => (
       <ul className="absolute bottom-4 flex justify-center gap-2 w-full">
-        {dots}
+        {dots.map((dot, index) => (
+          <li
+            key={index}
+            onClick={() => sliderRef.current?.slickGoTo(index)}
+            className="cursor-pointer"
+          >
+            {dot.props.children}
+          </li>
+        ))}
       </ul>
     ),
-    customPaging: (i) => (
-      <div className="w-3 h-3 rounded-full bg-pink-300 hover:bg-pink-500"></div>
+
+    customPaging: () => (
+      <div className="w-3 h-3 rounded-full bg-pink-300 hover:bg-pink-500 transition" />
     ),
   };
 
@@ -282,71 +338,88 @@ export default function ProductDetailsPage() {
           {/* السلايدر */}
           <div className="relative w-full flex justify-center">
             <Slider
+              ref={sliderRef}
               {...sliderSettings}
               className="w-full max-w-[clamp(280px,90vw,650px)]"
             >
-              <div className="flex justify-center">
-                <div className="relative w-full bg-gray-100 rounded-xl group flex justify-center overflow-hidden">
-                  {!imageLoaded && (
-                    <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-xl z-10 overflow-hidden" />
-                  )}
+              {images.map((img, index) => (
+                <div key={index} className="flex justify-center">
+                  <div className="relative w-full bg-white rounded-xl group flex justify-center overflow-hidden">
+                    <img
+                      src={img}
+                      alt={product.name}
+                      loading="lazy"
+                      className="
+            rounded-xl
+            w-auto
+            max-w-full
+            h-auto
+            max-h-[80vh]
+            object-contain
+            transition-transform
+            duration-500
+            ease-in-out
+            group-hover:scale-105
+          "
+                    />
 
-                  <img
-                    src={currentImage}
-                    alt={product.name}
-                    loading="lazy"
-                    onLoad={() => setImageLoaded(true)}
-                    className="
-                    overflow-hidden
-          rounded-xl
-          w-auto
-          max-w-full
-          h-auto
-          max-h-[80vh]
-          object-contain
-          transition-transform
-          duration-500
-          ease-in-out
-          group-hover:scale-105
-        "
-                  />
-
-                  {/* Hover */}
-                  <div
-                    className="
-          absolute inset-0
-          flex items-center justify-center
-          bg-black/30
-          opacity-0
-          group-hover:opacity-100
-          transition
-          cursor-pointer
-          rounded-xl
-        "
-                    onClick={() => setIsLightboxOpen(true)}
-                  >
-                    <span className="text-white text-4xl font-bold">+</span>
+                    {/* Hover */}
+                    <div
+                      className="
+            absolute inset-0
+            flex items-center justify-center
+            bg-black/30
+            opacity-0
+            group-hover:opacity-100
+            transition
+            cursor-pointer
+            rounded-xl
+          "
+                      onClick={() => {
+                        setCurrentImage(img);
+                        setIsLightboxOpen(true);
+                      }}
+                    >
+                      <span className="text-white text-4xl font-bold">+</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </Slider>
 
             {isLightboxOpen && (
-              <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-                {/* زر غلق */}
-                <button
-                  className="absolute top-4 right-4 text-white text-3xl font-bold"
-                  onClick={() => setIsLightboxOpen(false)}
-                >
-                  ×
-                </button>
+              <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+                <div className="relative w-full max-w-4xl px-4">
+                  <button
+                    className="absolute -top-10 right-2 text-white text-4xl font-bold z-50"
+                    onClick={() => setIsLightboxOpen(false)}
+                  >
+                    ×
+                  </button>
 
-                {/* الصورة المكبرة */}
-                <img
-                  src={currentImage}
-                  alt={product.name}
-                  className="max-h-[90vh] max-w-[90vw] object-contain rounded-lg shadow-lg"
-                />
+                  <Slider
+                    key={currentImage}
+                    initialSlide={product.images.indexOf(currentImage)}
+                    infinite
+                    arrows
+                    slidesToShow={1}
+                    slidesToScroll={1}
+                    speed={500}
+                  >
+                    {product.images.map((img, index) => (
+                      <div
+                        key={index}
+                        className="flex justify-center items-center"
+                      >
+                        <img
+                          src={img}
+                          alt=""
+                          className="max-h-[90vh] max-w-[90vw] object-contain rounded-lg mx-auto"
+                        />
+                      </div>
+                    ))}
+                  </Slider>
+                </div>
               </div>
             )}
 
@@ -356,55 +429,10 @@ export default function ProductDetailsPage() {
               </span>
             )}
           </div>
+
           {/* === جزء الألوان === */}
           <div className="flex flex-col gap-2 mt-4 w-full max-w-[clamp(280px,90vw,600px)] mx-auto">
             <div className="relative w-full">
-              {/* left arrow */}
-              {/* <button
-                onClick={() => {
-                  document
-                    .getElementById('colorsScroll')
-                    ?.scrollBy({ left: -100, behavior: 'smooth' });
-                }}
-                className="aspect-square h-8 flex items-center justify-center absolute left-0 top-1/2 -translate-y-1/2 bg-white/80 text-gray-700 rounded-full p-2 shadow-md hover:bg-white transition z-10"
-              >
-                ‹
-              </button> */}
-
-              {/* colors strip */}
-              {/* <div
-                id="colorsScroll"
-                className="flex gap-2 sm:gap-3 overflow-x-auto scroll-smooth py-2 px-8"
-              >
-                {product.colors?.map((color, index) => (
-                  <div
-                    key={color.name || index}
-                    className="relative group flex-shrink-0"
-                  >
-                    <button
-                      onClick={() => handleColorClick(color, index)}
-                      className={`aspect-square rounded-full overflow-hidden flex items-center justify-center transition-transform duration-200
-                        ${
-                          activeColorIndex === index
-                            ? 'border-2 border-pink-600 scale-110'
-                            : 'border-2 border-gray-300'
-                        }
-                      `}
-                      style={{
-                        width: 'clamp(40px,10vw,60px)',
-                        height: 'clamp(40px,10vw,60px)',
-                      }}
-                    >
-                      <img
-                        src={color.image}
-                        alt={color.name}
-                        loading="lazy"
-                        className="w-full h-full object-cover"
-                      />
-                    </button>
-                  </div>
-                ))}
-              </div> */}
               <div className="flex gap-3 justify-start">
                 {product.colors?.map((color, index) => (
                   <button
@@ -425,18 +453,6 @@ export default function ProductDetailsPage() {
                   </button>
                 ))}
               </div>
-
-              {/* right arrow */}
-              {/* <button
-                onClick={() => {
-                  document
-                    .getElementById('colorsScroll')
-                    ?.scrollBy({ left: 100, behavior: 'smooth' });
-                }}
-                className="aspect-square h-8 flex items-center justify-center absolute right-0 top-1/2 -translate-y-1/2 bg-white/80 text-gray-700 rounded-full p-2 shadow-md hover:bg-white transition z-10"
-              >
-                ›
-              </button> */}
             </div>
           </div>
         </div>
@@ -615,26 +631,6 @@ export default function ProductDetailsPage() {
       </div>
 
       <Footer />
-
-      {isLightboxOpen && (
-        <div
-          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
-          onClick={() => setIsLightboxOpen(false)}
-        >
-          <img
-            src={currentImage}
-            alt={product.name}
-            className="max-h-[90vh] max-w-[90vw] object-contain rounded-lg shadow-lg"
-            onClick={(e) => e.stopPropagation()} // عشان الضغط على الصورة نفسها لا يغلق
-          />
-          <button
-            className="absolute top-4 right-4 text-white text-3xl font-bold"
-            onClick={() => setIsLightboxOpen(false)}
-          >
-            ×
-          </button>
-        </div>
-      )}
     </div>
   );
 }

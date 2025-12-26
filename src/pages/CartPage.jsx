@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 // import { MinusIcon } from '@heroicons/react/24/solid';
 import AllProductsPage from './AllProductsPage';
 import CheckoutPage from './CheckoutPage';
+import CartPromotion from './CartPromotion';
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -16,13 +17,16 @@ export default function CartPage() {
   const {
     cart,
     removeFromCart,
-    clearCart,
+
     incrementQuantity,
     decrementQuantity,
   } = useCart();
-  const [cartItems, setCart] = useState(cart);
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const total = cart.reduce(
+    (sum, item) => sum + (item.finalPrice || item.price) * item.quantity,
+    0
+  );
 
   if (cart.length === 0)
     return (
@@ -66,7 +70,7 @@ export default function CartPage() {
       message += `${index + 1}. ${item.name}
  اللون: ${item.selectedColor?.name || 'لا يوجد'}
  الكمية: ${item.quantity}
-السعر: ${item.price.toFixed(2)} EGP
+السعر: ${item.finalPrice || item.price} EGP
  الصورة: ${imageUrl}
  الحجم: ${item.selectedSize?.name || 'لا يوجد'}
 
@@ -226,63 +230,17 @@ export default function CartPage() {
 
                       {/* الإجمالي */}
                       <td className="text-center text-gray-700 text-base font-normal">
+                        {/* {(item.price * item.quantity).toFixed(2)} LE */}
                         {(item.price * item.quantity).toFixed(2)} LE
                       </td>
                     </tr>
                   ))}
             </tbody>
           </table>
-          <div
-            className="flex flex-col md:flex-row justify-between items-center mt-8 pt-6"
-            dir="rtl"
-          >
-            {loading ? (
-              <div className="animate-pulse flex gap-4 mt-4 md:mt-0">
-                <div className="h-6 w-32 bg-gray-200 rounded"></div>
-                <div className="h-10 w-32 bg-gray-200 rounded"></div>
-                <div className="h-10 w-24 bg-gray-200 rounded"></div>
-              </div>
-            ) : (
-              <div className="flex flex-col  items-start gap-4 mt-4 md:mt-0">
-                <h2 className="text-lg font-normal  ">
-                  Estimated total
-                  <span className="text-pink-600 ml-5">
-                    {total.toFixed(2)} EGP
-                  </span>
-                </h2>
-                {/* <button
-                  onClick={handleCheckout}
-                  className="bg-pink-600 text-white px-35 py-3 my-2 rounded-lg hover:bg-pink-700 transition"
-                >
-                  Checkout
-                </button> */}
-
-                {/* <Link
-                  to="/checkout"
-                  className="bg-pink-600 text-white px-35 py-3 my-2 rounded-lg hover:bg-pink-700 transition"
-                >
-                  Checkout
-                </Link> */}
-                <button
-                  onClick={() => navigate('/Checkout')}
-                  className="bg-pink-600 text-white px-35 py-3 my-2 rounded-lg hover:bg-pink-700 transition"
-                >
-                  Checkout
-                </button>
-
-                {/* Clear Cart */}
-                <button
-                  onClick={clearCart}
-                  className="border border-gray-300 px-6 py-3 rounded-lg hover:bg-gray-100 transition text-gray-700 w-full md:w-auto text-center"
-                >
-                  Empty Cart
-                </button>
-              </div>
-            )}
+          <div className="flex  justify-end">
+            <CartPromotion />
           </div>
         </div>
-
-        {/* القسم السفلي */}
       </div>
       <Footer />
     </>

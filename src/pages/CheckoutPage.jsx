@@ -8,7 +8,12 @@ import Footer from '../components/footer';
 
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
-  const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+
+  const total = cart.reduce(
+    (sum, item) => sum + item.finalPrice  * item.quantity,
+    0
+  );
+
 
   const [step, setStep] = useState(1);
 
@@ -62,7 +67,7 @@ export default function CheckoutPage() {
       message += `\n${i + 1}. ${item.name}\n`;
       message += `Color: ${item.selectedColor?.name || '—'}\n`;
       message += `Quantity: ${item.quantity}\n`;
-      message += `Price: ${item.price} EGP\n`;
+      message += `Price: ${item.finalPrice } EGP\n`;
       message += `Image: ${image}\n`;
     });
 
@@ -219,7 +224,10 @@ export default function CheckoutPage() {
                       quantity: {item.quantity}
                     </p>
                     <p className="font-bold mt-1">
-                      {(item.price * item.quantity).toFixed(2)} EGP
+                      {(
+                        (item.finalPrice ) * item.quantity
+                      ).toFixed(2)}{' '}
+                      EGP
                     </p>
                   </div>
                 </div>
