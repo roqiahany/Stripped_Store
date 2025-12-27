@@ -381,7 +381,7 @@ export default function ProductDetailsPage() {
                           src={img}
                           onLoad={() => setImageLoaded(true)}
                           alt=""
-                          className={`transition duration-500 ${
+                          className={`block    mx-auto transition duration-500 ${
                             imageLoaded ? 'blur-0' : 'blur-md'
                           }
                           max-h-[90vh] max-w-[90vw] object-contain rounded-lg mx-auto" `}
