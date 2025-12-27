@@ -28,17 +28,18 @@ export default function ProductDetailsPage() {
   const [quantity, setQuantity] = useState(1);
 
   const [recommendedProducts, setRecommendedProducts] = useState([]);
-  const [product, setProduct] = useState(location.state?.product || null);
+  const [product, setProduct] = useState(null);
+
   const [selectedSize, setSelectedSize] = useState(null);
   const [activeColorIndex, setActiveColorIndex] = useState(0);
-  const activeColor = product.colors?.[activeColorIndex];
+  const activeColor = product?.colors?.[activeColorIndex] || null;
   const [activeColorProduct, setActiveColor] = useState(null);
 
   const [currentImage, setCurrentImage] = useState(null);
 
   const [imageLoaded, setImageLoaded] = useState(false); // for main image skeleton/blur
   const [showAllColors, setShowAllColors] = useState(false);
-  const [images, setImages] = useState(product.images || []);
+  const images = product?.images || [];
 
   const { addToCart } = useCart();
   const productColor = product?.colors?.[0];
@@ -56,8 +57,9 @@ export default function ProductDetailsPage() {
     packages: '#FFD700',
   };
 
-  const colorName = product.colors[0].name; // مثلا "Black_Obsidian_Onyx"
-  const colorHex = colorMap[colorName]; // "#353839"
+  const colorName = product?.colors?.[0]?.name; // مثلا "Black_Obsidian_Onyx"
+  const colorHex = colorName ? colorMap[colorName] : null;
+
   // const images = product.images || [currentImage];
 
   useEffect(() => {
@@ -89,6 +91,18 @@ export default function ProductDetailsPage() {
     // لو عندك logic mapping من sizeName -> صورة تانية، ضيفيه هنا
   }, [selectedSize]);
 
+  useEffect(() => {
+    // 🔥 reset كل حاجة لها علاقة بالمنتج القديم
+    setProduct(null);
+
+    setCurrentImage(null);
+    setSelectedSize(null);
+    setActiveColorIndex(0);
+    setQuantity(1);
+    setImageLoaded(false);
+    setIsLightboxOpen(false);
+  }, [id]);
+
   // fetch product (always fetch to ensure fresh data)
   useEffect(() => {
     const fetchProduct = async () => {
@@ -99,7 +113,11 @@ export default function ProductDetailsPage() {
         if (docSnap.exists()) {
           const fetchedProduct = { id: docSnap.id, ...docSnap.data() };
           setProduct(fetchedProduct);
-          setCurrentImage(fetchedProduct.images?.[0] || '/no-image.png');
+          setCurrentImage(
+            fetchedProduct.colors?.[0]?.image ||
+              fetchedProduct.images?.[0] ||
+              '/no-image.png'
+          );
           setActiveColorIndex(0);
 
           // ✨ اختر أول مقاس افتراضياً إذا متوفر عشان يظهر الـ selected state فوراً
@@ -147,13 +165,6 @@ export default function ProductDetailsPage() {
     };
 
     fetchRecommended();
-  }, [product]);
-
-  useEffect(() => {
-    if (!product) return;
-
-    const firstColorImage = product.colors?.[0]?.image;
-    setCurrentImage(firstColorImage || product.images?.[0] || '/no-image.png');
   }, [product]);
 
   useEffect(() => {
@@ -301,6 +312,7 @@ export default function ProductDetailsPage() {
           {/* السلايدر */}
           <div className="relative w-full flex justify-center">
             <Slider
+              key={product.id}
               ref={sliderRef}
               {...sliderSettings}
               className="w-full max-w-[clamp(280px,90vw,650px)]"
