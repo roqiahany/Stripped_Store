@@ -7,13 +7,12 @@ import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/footer';
 
 export default function CheckoutPage() {
-  const { cart, clearCart } = useCart();
+  const { cart, clearCart, promo } = useCart();
 
   const total = cart.reduce(
-    (sum, item) => sum + item.finalPrice  * item.quantity,
+    (sum, item) => sum + item.finalPrice * item.quantity,
     0
   );
-
 
   const [step, setStep] = useState(1);
 
@@ -67,11 +66,19 @@ export default function CheckoutPage() {
       message += `\n${i + 1}. ${item.name}\n`;
       message += `Color: ${item.selectedColor?.name || '—'}\n`;
       message += `Quantity: ${item.quantity}\n`;
-      message += `Price: ${item.finalPrice } EGP\n`;
+      message += `Price: ${item.finalPrice || item.price || 0} EGP\n`;
       message += `Image: ${image}\n`;
     });
 
-    message += `\n💰 *Total*: ${total} EGP`;
+    
+
+   if (promo?.code) {
+  message += `\n🏷 *Promo Code*: ${promo.code} (${promo.discount}% OFF)\n`;
+  message += `💰 *Total After Discount*: ${total.toFixed(2)} EGP`;
+} else {
+  message += `\n💰 *Total*: ${total.toFixed(2)} EGP`;
+}
+
 
     const phone = '+201117194095';
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
@@ -224,17 +231,14 @@ export default function CheckoutPage() {
                       quantity: {item.quantity}
                     </p>
                     <p className="font-bold mt-1">
-                      {(
-                        (item.finalPrice ) * item.quantity
-                      ).toFixed(2)}{' '}
-                      EGP
+                      {((item.finalPrice || item.price || 0) * item.quantity).toFixed(2)} EGP
                     </p>
                   </div>
                 </div>
               ))}
 
               <h3 className="text-lg font-bold">
-                total: <span className="text-pink-600">{total} EGP</span>
+                total: <span className="text-pink-600">{total.toFixed(2)} EGP</span>
               </h3>
 
               <button

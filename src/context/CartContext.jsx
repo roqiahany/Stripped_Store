@@ -10,6 +10,35 @@ export const CartProvider = ({ children }) => {
     return storedCart ? JSON.parse(storedCart) : [];
   });
 
+  const [promo, setPromo] = useState({
+    code: null,
+    discount: 0,
+  });
+
+  const applyPromoCode = (code) => {
+    const promoCodes = {
+      SAVE10: 10,
+      SAVE20: 20,
+      VIP30: 30,
+    };
+
+    const discount = promoCodes[code];
+    if (!discount) return false;
+
+    const updatedCart = cart.map((item) => ({
+      ...item,
+      finalPrice: item.price * (1 - discount / 100),
+    }));
+
+    setCart(updatedCart);
+    setPromo({ code, discount });
+
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    syncCartToFirestore(updatedCart);
+
+    return true;
+  };
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -161,6 +190,8 @@ export const CartProvider = ({ children }) => {
     <CartContext.Provider
       value={{
         cart,
+        applyPromoCode,
+        promo,
         addToCart,
         removeFromCart,
         clearCart,
