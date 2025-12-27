@@ -30,17 +30,19 @@ const CartPromotion = () => {
         </div>
 
         <div className="flex gap-2">
-          <input
-            value={promoCode}
-            onChange={(e) => setPromoCode(e.target.value)}
-            placeholder="Enter code"
-            className="flex-1 border rounded px-3 py-2"
-          />
-          {promo?.code && (
-            <p className="text-green-600 text-sm mt-2">
-              Promo code <b>{promo.code}</b> applied ({promo.discount}% off)
-            </p>
-          )}
+          <div className=" flex flex-col">
+            <input
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+              placeholder="Enter code"
+              className="flex-1 border rounded px-3 py-2"
+            />
+            {promo?.code && (
+              <p className="text-green-600 text-sm mt-2">
+                Promo code <b>{promo.code}</b> applied ({promo.discount}% off)
+              </p>
+            )}
+          </div>
 
           <button
             onClick={handleApply}

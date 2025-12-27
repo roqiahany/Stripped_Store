@@ -156,46 +156,30 @@ export default function ProductDetailsPage() {
     setCurrentImage(firstColorImage || product.images?.[0] || '/no-image.png');
   }, [product]);
 
+  useEffect(() => {
+    if (!product?.images?.length) return;
+
+    const preloadImages = async () => {
+      await Promise.all(
+        product.images.map(
+          (src) =>
+            new Promise((resolve) => {
+              const img = new Image();
+              img.src = src;
+              img.onload = resolve;
+            })
+        )
+      );
+    };
+
+    preloadImages();
+  }, [product]);
+
   // quantity handlers
   const incrementQuantity = () => setQuantity((prev) => prev + 1);
   const decrementQuantity = () =>
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
-  // const handleColorClick = (color, index) => {
-  //   setActiveColorIndex(index);
-
-  //   // لو اللون عنده image → استعمله مباشرة
-  //   if (color.image) {
-  //     setCurrentImage(color.image);
-  //     return;
-  //   }
-
-  //   // لو مفيش صورة في اللون → استخدم صورة المقاس
-  //   if (
-  //     selectedSize &&
-  //     typeof selectedSize === 'object' &&
-  //     selectedSize.image
-  //   ) {
-  //     setCurrentImage(selectedSize.image);
-  //     return;
-  //   }
-
-  //   // لو مفيش أي صورة → خلي الصورة الحالية بدون تغيير
-  // };
-  // const handleColorClick = (color, index) => {
-  //   setActiveColorIndex(index);
-
-  //   // لو اللون ليه صور
-  //   if (color.images && color.images.length > 0) {
-  //     setImages(color.images);
-  //     setCurrentImage(color.images[0]);
-
-  //     // رجّعي السلايدر لأول صورة
-  //     setTimeout(() => {
-  //       sliderRef.current?.slickGoTo(0);
-  //     }, 0);
-  //   }
-  // };
   const handleColorClick = (color, index) => {
     setActiveColorIndex(index);
 
@@ -221,27 +205,6 @@ export default function ProductDetailsPage() {
     addToCart(productWithSelectedOptions, quantity, selectedSize);
     navigate('/cart');
   };
-
-  // slider settings (same as yours)
-  // const sliderSettings = {
-  //   dots: true,
-  //   infinite: true,
-  //   speed: 500,
-  //   slidesToShow: 1,
-  //   slidesToScroll: 1,
-  //   adaptiveHeight: true,
-  //   arrows: true,
-  //   nextArrow: <NextArrow />,
-  //   prevArrow: <PrevArrow />,
-  //   appendDots: (dots) => (
-  //     <ul className="absolute bottom-4 flex justify-center gap-2 w-full">
-  //       {dots}
-  //     </ul>
-  //   ),
-  //   customPaging: (i) => (
-  //     <div className="w-3 h-3 rounded-full bg-pink-300 hover:bg-pink-500"></div>
-  //   ),
-  // };
 
   const sliderSettings = {
     dots: false,
