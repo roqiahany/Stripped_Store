@@ -310,9 +310,12 @@ export default function ProductDetailsPage() {
                   <div className="relative w-full bg-white rounded-xl group flex justify-center overflow-hidden">
                     <img
                       src={img}
+                      onLoad={() => setImageLoaded(true)}
                       alt={product.name}
-                      loading="lazy"
-                      className="
+                      loading="eager"
+                      className={`transition duration-500 ${
+                        imageLoaded ? 'blur-0' : 'blur-md'
+                      }
             rounded-xl
             w-auto
             max-w-full
@@ -323,7 +326,7 @@ export default function ProductDetailsPage() {
             duration-500
             ease-in-out
             group-hover:scale-105
-          "
+          `}
                     />
 
                     {/* Hover */}
@@ -376,8 +379,13 @@ export default function ProductDetailsPage() {
                       >
                         <img
                           src={img}
+                          onLoad={() => setImageLoaded(true)}
                           alt=""
-                          className="max-h-[90vh] max-w-[90vw] object-contain rounded-lg mx-auto"
+                          className={`transition duration-500 ${
+                            imageLoaded ? 'blur-0' : 'blur-md'
+                          }
+                          max-h-[90vh] max-w-[90vw] object-contain rounded-lg mx-auto" `}
+                          loading="eager"
                         />
                       </div>
                     ))}
