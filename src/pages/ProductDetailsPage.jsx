@@ -21,6 +21,8 @@ export default function ProductDetailsPage() {
   const sliderRef = useRef(null);
 
   // states
+  const [firstLoad, setFirstLoad] = useState(true);
+
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [loadingRecommended, setLoadingRecommended] = useState(true);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -39,6 +41,10 @@ export default function ProductDetailsPage() {
 
   const [imageLoaded, setImageLoaded] = useState(false); // for main image skeleton/blur
   const [showAllColors, setShowAllColors] = useState(false);
+  const lightboxRef = useRef(null);
+
+  const lightboxSliderRef = useRef(null); // 🔥 سلايدر اللايت بوكس
+
   const images = product?.images || [];
 
   const { addToCart } = useCart();
@@ -225,27 +231,58 @@ export default function ProductDetailsPage() {
     slidesToScroll: 1,
     adaptiveHeight: true,
     arrows: false,
+    accessibility: false,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
 
-    appendDots: (dots) => (
-      <ul className="absolute bottom-4 flex justify-center gap-2 w-full">
-        {dots.map((dot, index) => (
-          <li
-            key={index}
-            onClick={() => sliderRef.current?.slickGoTo(index)}
-            className="cursor-pointer"
-          >
-            {dot.props.children}
-          </li>
-        ))}
-      </ul>
-    ),
+    // appendDots: (dots) => (
+    //   <ul className="absolute bottom-4 flex justify-center gap-2 w-full">
+    //     {dots.map((dot, index) => (
+    //       <li
+    //         key={index}
+    //         onClick={() => sliderRef.current?.slickGoTo(index)}
+    //         className="cursor-pointer"
+    //       >
+    //         {dot.props.children}
+    //       </li>
+    //     ))}
+    //   </ul>
+    // ),
 
-    customPaging: () => (
-      <div className="w-3 h-3 rounded-full bg-pink-300 hover:bg-pink-500 transition" />
-    ),
+    // customPaging: () => (
+    //   <div className="w-3 h-3 rounded-full bg-pink-300 hover:bg-pink-500 transition" />
+    // ),
+
+    afterChange: (currentSlide) => {
+      const colorIndex = product.colors?.findIndex(
+        (c) => c.imageIndex === currentSlide
+      );
+
+      if (colorIndex !== -1) {
+        setActiveColorIndex(colorIndex);
+      }
+
+      setCurrentImage(product.images[currentSlide]);
+      setImageLoaded(false);
+    },
   };
+
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+
+    const handleKey = (e) => {
+      if (e.key === 'ArrowRight') lightboxSliderRef.current?.slickNext();
+      if (e.key === 'ArrowLeft') lightboxSliderRef.current?.slickPrev();
+      if (e.key === 'Escape') setIsLightboxOpen(false);
+    };
+
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [isLightboxOpen]);
+
+  // useEffect(() => {
+  //   setImageLoaded(false);
+  // }, [currentImage]);
 
   // --------- RENDERING ---------
   if (loadingProduct) {
@@ -325,17 +362,15 @@ export default function ProductDetailsPage() {
                       onLoad={() => setImageLoaded(true)}
                       alt={product.name}
                       loading="eager"
-                      className={`transition duration-500 ${
-                        imageLoaded ? 'blur-0' : 'blur-md'
-                      }
+                      className={`transition duration-500 
+                     
             rounded-xl
             w-auto
             max-w-full
             h-auto
             max-h-[80vh]
             object-contain
-            transition-transform
-            duration-500
+          
             ease-in-out
             group-hover:scale-105
           `}
@@ -366,7 +401,11 @@ export default function ProductDetailsPage() {
             </Slider>
 
             {isLightboxOpen && (
-              <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+              <div
+                className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+                tabIndex={-1}
+                ref={lightboxRef}
+              >
                 <div className="relative w-full max-w-4xl px-4">
                   <button
                     className="absolute -top-10 right-2 text-white text-4xl font-bold z-50"
@@ -376,13 +415,15 @@ export default function ProductDetailsPage() {
                   </button>
 
                   <Slider
-                    key={currentImage}
+                    // key={currentImage}
+                    ref={lightboxSliderRef}
                     initialSlide={product.images.indexOf(currentImage)}
                     infinite
                     arrows
                     slidesToShow={1}
                     slidesToScroll={1}
                     speed={500}
+                    accessibility={true}
                   >
                     {product.images.map((img, index) => (
                       <div
@@ -429,9 +470,13 @@ export default function ProductDetailsPage() {
         }`}
                   >
                     <img
+                      onLoad={() => setFirstLoad(false)}
                       src={color.image}
                       alt={color.name}
-                      className="w-full h-full object-cover"
+                      className={`w-full h-full object-cover
+                      transition duration-500 ${
+                        firstLoad ? 'blur-md' : 'blur-0'
+                      }`}
                     />
                   </button>
                 ))}
@@ -617,3 +662,121 @@ export default function ProductDetailsPage() {
     </div>
   );
 }
+
+// import { useRef, useState } from 'react';
+// import { useParams, useNavigate } from 'react-router-dom';
+// import Navbar from '../components/Navbar/Navbar';
+// import Footer from '../components/footer';
+// import { useCart } from '../context/CartContext';
+
+// import { useProductDetails } from '../components/ProductDetails/useProductDetails';
+// import ProductImageSlider from '../components/ProductDetails/ProductImageSlider';
+// import ProductLightbox from '../components/ProductDetails/ProductLightbox';
+// import ProductColors from '../components/ProductDetails/ProductColors';
+// import ProductSizes from '../components/ProductDetails/ProductSizes';
+// import ProductQuantity from '../components/ProductDetails/ProductQuantity';
+// import ProductInfo from '../components/ProductDetails/ProductInfo';
+// import RecommendedProducts from '../components/ProductDetails/RecommendedProducts';
+
+// import toast from 'react-hot-toast';
+
+// export default function ProductDetailsPage() {
+//   const { id } = useParams();
+//   const navigate = useNavigate();
+//   const sliderRef = useRef(null);
+
+//   const { product, recommendedProducts, loadingProduct, loadingRecommended } =
+//     useProductDetails(id);
+
+//   const { addToCart } = useCart();
+
+//   const [activeColorIndex, setActiveColorIndex] = useState(0);
+//   const [selectedSize, setSelectedSize] = useState(null);
+//   const [quantity, setQuantity] = useState(1);
+//   const [lightboxImage, setLightboxImage] = useState(null);
+
+//   if (loadingProduct) return null;
+//   if (!product) return <div>المنتج غير موجود</div>;
+
+//   const images = product.images || [];
+//   const activeColor = product.colors?.[activeColorIndex];
+
+//   const handleAddToCart = () => {
+//     if (!selectedSize || !activeColor) {
+//       toast.error('Please select color and size');
+//       return;
+//     }
+
+//     addToCart(
+//       {
+//         ...product,
+//         selectedColor: activeColor,
+//         selectedSize,
+//       },
+//       quantity
+//     );
+
+//     navigate('/cart');
+//   };
+
+//   return (
+//     <>
+//       <Navbar />
+
+//       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10">
+//         <div>
+//           <ProductImageSlider
+//             images={images}
+//             sliderRef={sliderRef}
+//             onImageClick={setLightboxImage}
+//           />
+
+//           <ProductColors
+//             colors={product.colors}
+//             activeIndex={activeColorIndex}
+//             onSelect={(_, i) => setActiveColorIndex(i)}
+//           />
+//         </div>
+
+//         <div className="space-y-4">
+//           <ProductInfo product={product} />
+
+//           <ProductSizes
+//             sizes={activeColor?.sizes}
+//             selectedSize={selectedSize}
+//             onSelect={setSelectedSize}
+//           />
+
+//           <ProductQuantity
+//             quantity={quantity}
+//             onIncrease={() => setQuantity((q) => q + 1)}
+//             onDecrease={() => setQuantity((q) => Math.max(1, q - 1))}
+//             disabled={product.soldOut}
+//           />
+
+//           <button
+//             onClick={handleAddToCart}
+//             className="bg-pink-600 text-white py-3 rounded-lg"
+//           >
+//             Add to Cart
+//           </button>
+//         </div>
+//       </div>
+
+//       <RecommendedProducts
+//         products={recommendedProducts}
+//         loading={loadingRecommended}
+//       />
+
+//       {lightboxImage && (
+//         <ProductLightbox
+//           images={images}
+//           currentImage={lightboxImage}
+//           onClose={() => setLightboxImage(null)}
+//         />
+//       )}
+
+//       <Footer />
+//     </>
+//   );
+// }
