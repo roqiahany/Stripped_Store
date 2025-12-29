@@ -1,4 +1,6 @@
+
 import { FaFacebook, FaInstagram, FaTiktok, FaWhatsapp } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -81,36 +83,13 @@ const Footer = () => {
           {/* روابط السياسات */}
           <ul className="flex flex-wrap justify-center md:justify-end gap-4">
             <li>
-              <a
-                href="/policies/privacy-policy"
-                className="hover:text-pink-600 transition-colors"
-              >
-                Privacy Policy
-              </a>
-            </li>
-            <li>
-              <a
-                href="/policies/refund-policy"
-                className="hover:text-pink-600 transition-colors"
-              >
-                Refund Policy
-              </a>
-            </li>
-            <li>
-              <a
-                href="/policies/terms-of-service"
-                className="hover:text-pink-600 transition-colors"
-              >
-                Terms of Service
-              </a>
-            </li>
-            <li>
-              <a
-                href="/policies/contact-information"
+             
+              <Link
+                to='/contact'
                 className="hover:text-pink-600 transition-colors"
               >
                 Contact Information
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
